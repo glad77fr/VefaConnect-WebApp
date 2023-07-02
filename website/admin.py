@@ -3,14 +3,14 @@ from .models import RealEstateDeveloper, RealEstateProgram, FollowedProgram, Cou
 
 @admin.register(RealEstateDeveloper)
 class RealEstateDeveloperAdmin(admin.ModelAdmin):
-    list_display = ('name', 'description')
-    search_fields = ('name', 'description')
+    list_display = ('name', 'description','slug')
+    search_fields = ('name', 'description','slug')
 
 @admin.register(RealEstateProgram)
 class RealEstateProgramAdmin(admin.ModelAdmin):
-    list_display = ('name', 'address', 'developer')
+    list_display = ('name', 'address', 'developer','slug')
     list_filter = ('developer',)
-    search_fields = ('name', 'location', 'developer__name')
+    search_fields = ('name', 'location', 'developer__name','slug')
 
 @admin.register(FollowedProgram)
 class FollowedProgramAdmin(admin.ModelAdmin):
@@ -34,3 +34,8 @@ class AddressAdmin(admin.ModelAdmin):
     list_display = ('street', 'city', 'country')
     list_filter = ('country', 'city__country')
     search_fields = ('street', 'city__name', 'country__name')
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == 'city':
+            kwargs["queryset"] = City.objects.order_by('name')
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)

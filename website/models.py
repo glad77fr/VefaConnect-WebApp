@@ -27,36 +27,49 @@ class Address(models.Model):
     country = models.ForeignKey(Country, on_delete=models.CASCADE)
     city = models.ForeignKey(City, on_delete=models.CASCADE)
     street = models.CharField(max_length=200)
-    postal_code = models.CharField(max_length=20)
 
     def __str__(self):
         return f"{self.street}, {self.city}, {self.country}"
 
 class RealEstateDeveloper(models.Model):
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=200, unique=True) 
     description = models.TextField(blank=True)
     slug = models.SlugField(unique=True, editable=False)
 
+    def __str__(self):
+        return self.name  # remplacer 'name' par le champ qui contient le nom du développeur
+
     def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)  
-        if not self.slug:
-            self.slug = slugify(f'{self.name}-{self.pk}') 
-            super().save(*args, **kwargs) 
+        if not self.pk:  # If the object has not been saved yet
+            super(RealEstateDeveloper, self).save(*args, **kwargs)  # Save it to get an ID
+            self.slug = slugify(f'{self.name}-{self.pk}')  # Now we can generate the slug
+        else:
+            if not self.slug:  # In case the object was saved before but without a slug
+                self.slug = slugify(f'{self.name}-{self.pk}')
+        super(RealEstateDeveloper, self).save(*args, **kwargs)  # Save the object again, with the slug
+
+
 
 class RealEstateProgram(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True)
     developer = models.ForeignKey(RealEstateDeveloper, on_delete=models.CASCADE, related_name='programs')
     slug = models.SlugField(unique=True, editable=False)
-    start_date = models.DateField(null=True, blank=True)
     end_date = models.DateField(null=True, blank=True)
+    new_end_date = models.DateField(null=True, blank=True)
     address = models.ForeignKey(Address, on_delete=models.CASCADE, null=True)
+    image = models.ImageField(upload_to='program_images/', null=True, blank=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['name', 'address', 'developer'], name='unique_program')
+        ]
 
     def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)  # On enregistre d'abord l'objet pour obtenir une clé primaire
+        self.name = self.name.strip().lower()  # Normalize the name by converting to lowercase and trimming whitespace
         if not self.slug:
-            self.slug = slugify(f'{self.name}-{self.pk}')  # On génère le slug à partir du nom et de la clé primaire
-            super().save(*args, **kwargs)  # On enregistre l'objet une deuxième fois pour sauvegarder le slug
+            self.slug = slugify(f'{self.name}-{self.pk}')
+        super().save(*args, **kwargs)
 
 class FollowedProgram(models.Model):
     user_profile = models.ForeignKey('forum.UserProfile', on_delete=models.CASCADE)
