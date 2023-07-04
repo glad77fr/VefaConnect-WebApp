@@ -1,0 +1,11 @@
+.input-group {
+    width: 100%;
+}
+
+.input-group .form-control {
+    width: 80%;
+}
+
+.input-group-append .btn {
+    width: 20%;
+}
