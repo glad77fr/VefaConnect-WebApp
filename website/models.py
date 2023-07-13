@@ -69,6 +69,15 @@ class RealEstateProgram(models.Model):
         self.name = self.name.strip().lower()  # Normalize the name by converting to lowercase and trimming whitespace
         if not self.slug:
             self.slug = slugify(f'{self.name}-{self.pk}')
+
+                # Set default image if not present
+        if not self.image:
+            default_image_path = os.path.join(settings.BASE_DIR, 'media', 'Default program.jpg')
+            self.image.save(
+                os.path.basename(default_image_path),
+                File(open(default_image_path, 'rb'))
+            )
+
         super().save(*args, **kwargs)
 
 class FollowedProgram(models.Model):
