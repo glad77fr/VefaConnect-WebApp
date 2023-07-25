@@ -1,21 +1,21 @@
-html, body {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-}
 
-html {
-  position: relative;
-  min-height: 100%;
+html, body {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 body {
-  margin-bottom: 60px; /* Hauteur de votre footer */
+  flex-grow: 1;
+  margin-bottom: 0;
+}
+
+main {
+  flex-grow: 1;
 }
 
 footer {
-  position: absolute;
-  bottom: 0;
+  flex-shrink: 0;
   width: 100%;
   height: 140px; /* Hauteur de votre footer */
 }

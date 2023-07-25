@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <h2 class="text-center">Confirmation de suivi du programme</h2>
+            <div class="alert alert-success mt-4">
+                Vous suivez maintenant le programme : {{ program.name }}
+            </div>
+            <p>
+                Description du programme : {{ program.description }}
+            </p>
+            <p>
+                Développeur immobilier : {{ program.developer.name }}
+            </p>
+            <p>
+                Date de fin prévue : {{ program.end_date }}
+            </p>
+            <a href="{% url 'program_detail' program.slug %}" class="btn btn-primary">Voir les détails du programme</a>
+            <a href="" class="btn btn-secondary">Retourner à votre profil</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

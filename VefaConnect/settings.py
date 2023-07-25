@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',    
     'website',
     'forum',
+     'widget_tweaks',
 ]
 
 MIDDLEWARE = [

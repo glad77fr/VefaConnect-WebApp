@@ -3,7 +3,6 @@ from django.utils.text import slugify
 from django.contrib.auth.models import User
 from website.models import RealEstateProgram
 
-
 # Create your models here.
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)

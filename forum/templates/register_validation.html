@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Inscription Réussie{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-6 mx-auto">
+            <h2>Félicitations, vous êtes inscrit(e) !</h2>
+            <p>Merci pour votre inscription. Nous avons envoyé un e-mail de vérification à l'adresse que vous avez fournie. Veuillez cliquer sur le lien dans cet e-mail pour vérifier votre compte.</p>
+            <p>Si vous ne recevez pas l'e-mail de vérification, veuillez vérifier votre dossier de courrier indésirable. Si vous rencontrez toujours des problèmes, n'hésitez pas à <a href="{% url 'contact' %}">nous contacter</a>.</p>
+            <a href="{% url 'home' %}" class="btn btn-primary mt-3">Retour à l'accueil</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

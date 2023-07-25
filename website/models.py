@@ -49,7 +49,6 @@ class RealEstateDeveloper(models.Model):
         super(RealEstateDeveloper, self).save(*args, **kwargs)  # Save the object again, with the slug
 
 
-
 class RealEstateProgram(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True)
@@ -64,7 +63,9 @@ class RealEstateProgram(models.Model):
         constraints = [
             models.UniqueConstraint(fields=['name', 'address', 'developer'], name='unique_program')
         ]
-
+    def __str__(self):
+            return self.name
+    
     def save(self, *args, **kwargs):
         self.name = self.name.strip().lower()  # Normalize the name by converting to lowercase and trimming whitespace
         if not self.slug:

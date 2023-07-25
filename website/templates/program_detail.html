@@ -15,7 +15,14 @@
                         <p>Promoteur: {{ program.developer.name }}</p>
                         <p>Adresse: {{ program.address }}</p>
                         <p>Date de fin de construction estimée : {{ program.end_date|date:"d/m/Y" }}</p>
-                        <p>Description: {{ program.description }}</p>
+                        <p>Description: {{ program.description }}</p>   
+                        {% if user.is_authenticated %}
+                            {% if not program_is_followed %}
+                                <a href="{% url 'program_register' program.id %}" class="btn btn-primary">Suivre le programme</a>
+                            {% endif %}
+                        {% else %}
+                            <p>Connectez-vous pour suivre ce programme.</p>
+                        {% endif %}
                     </div>
                 </div>
             </div>

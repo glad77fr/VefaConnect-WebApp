@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+<script> 
+  function checkOwner() {
+    var isOwnerValue = document.getElementById("id_is_owner").value;
+    var lotReferenceDiv = document.getElementById("lot-reference-div");
+    if (isOwnerValue === "True") {
+      lotReferenceDiv.style.display = "block";
+    } else {
+      lotReferenceDiv.style.display = "none";
+    }
+  }
+
+  window.onload = function() {
+    checkOwner();
+    document.getElementById("id_is_owner").onchange = checkOwner;
+  }
+</script>
+
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <h2 class="text-center">Suivre le programme {{ form.program.name}}</h2>
+        <form method="post" class="mt-4">
+          {% csrf_token %}
+          {{ form.real_estate_program }}
+          {{ form.user_profile }}
+          <div class="form-group">
+            {{ form.is_owner.label_tag }}
+            {{ form.is_owner }}
+          </div>
+          <div class="form-group" id="lot-reference-div" style="display: none;">
+            {{ form.apartment_lot_reference.label_tag }}
+            {{ form.apartment_lot_reference }}
+          </div>
+          <input type="submit" value="Suivre le programme" class="btn btn-primary btn-block mt-4">
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}
