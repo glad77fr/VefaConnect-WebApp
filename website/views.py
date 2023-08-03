@@ -33,10 +33,14 @@ class ProgramDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        user_profile = self.request.user.userprofile
-        program_is_followed = FollowedProgram.objects.filter(user_profile=user_profile, real_estate_program=self.object).exists()
-        context['program_is_followed'] = program_is_followed
+        if self.request.user.is_authenticated:
+            user_profile = self.request.user.userprofile
+            program_is_followed = FollowedProgram.objects.filter(user_profile=user_profile, real_estate_program=self.object).exists()
+            context['program_is_followed'] = program_is_followed
+        else:
+            context['program_is_followed'] = False
         return context
+
 
 @login_required
 def follow_program_view(request, program_id):
@@ -61,6 +65,7 @@ class FollowedProgramView(FormView):
         return kwargs
 
     def form_valid(self, form):
+        form.save()
         # Here you can handle your form after it has been validated
         # For example, you can save the instance of your FollowedProgramForm
 

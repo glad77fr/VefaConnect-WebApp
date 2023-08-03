@@ -5,11 +5,32 @@ from website.models import RealEstateProgram
 
 # Create your models here.
 class UserProfile(models.Model):
+    GENDER_CHOICES = (
+        ('M', 'Male'),
+        ('F', 'Female'),
+        ('O', 'Other'),
+)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     bio = models.TextField(blank=True) 
     followed_programs = models.ManyToManyField('website.RealEstateProgram', through='website.FollowedProgram', related_name='followers')
     joined_date = models.DateTimeField(auto_now_add=True)
     photo = models.ImageField(upload_to='user_photos/', blank=True, null=True)
+    first_name = models.CharField(max_length=30, blank=True, null=True) 
+    last_name = models.CharField(max_length=30, blank=True, null=True) 
+    gender = models.CharField(max_length=1, null=False, blank=False, choices=GENDER_CHOICES)
+
+    def save(self, *args, **kwargs):
+        if not self.photo: # if no photo was provided
+            if self.gender == 'M':
+                self.photo = 'user_photos/Default_male_profile.jpg'
+            elif self.gender == 'F':
+                self.photo = 'user_photos/Default_female_profile.jpg'
+            else:
+                self.photo = 'user_photos/Default_other_profile.jpg'
+        super(UserProfile, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return self.user.username   # remplacer 'name' par le champ qui contient le nom du développeur
 
 class Forum(models.Model):
     name = models.CharField(max_length=200)
@@ -21,10 +42,16 @@ class Forum(models.Model):
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
 
+    def __str__(self):
+        return self.name
+    
 class ForumTheme(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True)
     forum = models.ForeignKey(Forum, on_delete=models.CASCADE, related_name='themes')
+
+    def __str__(self):
+        return self.title
 
 class ForumPost(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

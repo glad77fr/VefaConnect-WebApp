@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from .models import UserProfile
-from .forms import UserRegisterForm
+from .forms import UserRegisterForm, UserProfileForm
 from django.core.mail import send_mail
+from django.contrib import messages 
+from django.contrib.auth.decorators import login_required
 
 def login_view(request):
     if request.method == "POST":
@@ -13,6 +15,7 @@ def login_view(request):
             login(request, user)
             return redirect('home')  # redirect to the home page
         else:
+            messages.error(request, 'Identifiant ou mot de passe invalide.')  # Add an error message
             return render(request, 'login_register.html', {'error': 'Invalid username or password.'})
     else:
         return render(request, 'login_register.html')
@@ -24,7 +27,10 @@ def register_view(request):
             user = form.save()
             bio = form.cleaned_data.get('bio')
             photo = form.cleaned_data.get('photo')
-            UserProfile.objects.create(user=user, bio=bio, photo=photo)
+            gender = form.cleaned_data.get('gender')  # Extract gender from the form
+            first_name = form.cleaned_data.get('first_name')  # Extract first_name from the form
+            last_name = form.cleaned_data.get('last_name')  # Extract last_name from the form
+            UserProfile.objects.create(user=user, bio=bio, photo=photo, gender=gender, first_name=first_name, last_name=last_name)  # Assign all the fields to the user profile
             login(request, user)
 
             # Send confirmation email
@@ -40,6 +46,7 @@ def register_view(request):
     else:
         form = UserRegisterForm()
     return render(request, 'register.html', {'form': form})
+
 
 def contact_view(request):
     if request.method == 'POST':
@@ -58,3 +65,15 @@ def contact_view(request):
         return redirect('nom_de_lurl_de_confirmation')
 
     return render(request, 'contact.html')
+
+@login_required
+def profile(request):
+    if request.method == 'POST':
+        # ici, vous devriez gérer la mise à jour du profil
+        # par exemple, en utilisant un ModelForm pour UserProfile
+        form = UserProfileForm(request.POST, request.FILES, instance=request.user.userprofile)
+        if form.is_valid():
+            form.save()
+    else:
+        form = UserProfileForm(request.POST, request.FILES, instance=request.user.userprofile)
+    return render(request, 'profile.html', {'form': form})

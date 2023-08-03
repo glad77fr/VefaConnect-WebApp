@@ -5,24 +5,55 @@ from django.contrib.auth.models import User
 from .models import UserProfile
 
 class UserRegisterForm(UserCreationForm):
-    username = forms.CharField(
-        max_length=150, 
-        required=True, 
+
+    first_name = forms.CharField(
+        max_length=30, 
+        required=False, 
         widget=forms.TextInput(
             attrs={
                 'class': 'form-control',
-                'placeholder': 'Username',
+                'placeholder': 'Prénom',
+            }
+        ), 
+        help_text=None
+    )
+
+    last_name = forms.CharField(
+        max_length=30, 
+        required=False, 
+        widget=forms.TextInput(
+            attrs={
+                'class': 'form-control',
+                'placeholder': 'Nom',
+            }
+        ), 
+        help_text=None
+    )
+
+    gender = forms.ChoiceField(
+            required=True, 
+            choices=UserProfile.GENDER_CHOICES,
+            widget=forms.RadioSelect()
+        )
+    
+    username = forms.CharField(
+        max_length=150, 
+        required=True,
+        widget=forms.TextInput(
+            attrs={
+                'class': 'form-control',
+                'placeholder': 'Pseudo*',
             }
         ), 
         help_text=None  # supprime le texte d'aide
     )
     
-    email = forms.EmailField(
+    email = forms.EmailField(   
         required=True,
         widget=forms.EmailInput(
             attrs={
                 'class': 'form-control',
-                'placeholder': 'Email',
+                'placeholder': 'Adresse email*',
             }
         ),
         help_text=None  # supprime le texte d'aide
@@ -33,7 +64,7 @@ class UserRegisterForm(UserCreationForm):
         widget=forms.PasswordInput(
             attrs={
                 'class': 'form-control',
-                'placeholder': 'Password',
+                'placeholder': 'Mot de passe*',
             }
         ),
         help_text=None  # supprime le texte d'aide
@@ -44,13 +75,14 @@ class UserRegisterForm(UserCreationForm):
         widget=forms.PasswordInput(
             attrs={
                 'class': 'form-control',
-                'placeholder': 'Confirm password',
+                'placeholder': 'Confirmation mot de passe*',
             }
         ),
         help_text=None  # supprime le texte d'aide
     )
     
     bio = forms.CharField(
+        label = "Description bio",
         required=False,
         widget=forms.Textarea(
             attrs={
@@ -62,6 +94,7 @@ class UserRegisterForm(UserCreationForm):
     )
     
     photo = forms.ImageField(
+        label = "Photo",
         required=False,
         widget=forms.FileInput(
             attrs={
@@ -73,4 +106,9 @@ class UserRegisterForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password1', 'password2', 'bio', 'photo']
+        fields = ['username', 'email', 'password1', 'password2', 'first_name', 'last_name', 'gender']
+
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ['bio', 'photo']

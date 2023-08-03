@@ -5,7 +5,7 @@ from .models import UserProfile, Forum, ForumTheme, ForumPost, Reply
 # Configuration de l'administration pour le modèle UserProfile
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'joined_date')
+    list_display = ('user', 'joined_date',"first_name","last_name","gender")
     list_filter = ('joined_date',)
     search_fields = ('user__username', 'user__email')
 

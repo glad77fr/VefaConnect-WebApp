@@ -7,8 +7,10 @@ from django.contrib.auth.views import LogoutView
 
 
 class LogoutAndStay(LogoutView):
+    next_page = '/'
     def get_next_page(self):
         return self.request.META.get('HTTP_REFERER', super().get_next_page())
+    
     
 urlpatterns = [
     path('', views.home, name='home'),
