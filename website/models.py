@@ -1,5 +1,9 @@
 from django.db import models
 from django.utils.text import slugify
+import os
+from django.conf import settings
+from django.core.files import File  
+
 
 # Create your models here.
 
@@ -58,6 +62,7 @@ class RealEstateProgram(models.Model):
     new_end_date = models.DateField(null=True, blank=True)
     address = models.ForeignKey(Address, on_delete=models.CASCADE, null=True)
     image = models.ImageField(upload_to='program_images/', null=True, blank=True)
+    validated = models.BooleanField(default=False, null=False)
 
     class Meta:
         constraints = [
@@ -73,13 +78,21 @@ class RealEstateProgram(models.Model):
 
                 # Set default image if not present
         if not self.image:
-            default_image_path = os.path.join(settings.BASE_DIR, 'media', 'Default program.jpg')
+            default_image_path = os.path.join(settings.BASE_DIR, 'media', 'program_images/Default_program.jpg')
             self.image.save(
                 os.path.basename(default_image_path),
                 File(open(default_image_path, 'rb'))
             )
 
         super().save(*args, **kwargs)
+
+class UnvalidatedRealEstateProgram(RealEstateProgram):
+    class Meta:
+        proxy = True
+        verbose_name = 'Unvalidated Program'
+        verbose_name_plural = 'Unvalidated Programs'
+
+
 
 class FollowedProgram(models.Model):
     user_profile = models.ForeignKey('forum.UserProfile', on_delete=models.CASCADE)

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container my-4">
+    <h1>Mes Programmes</h1>
+    {% if followed_programs %}
+    <div class="row">
+        {% for program in followed_programs %}
+        <div class="col-md-4 my-2">
+            <div class="card">
+                <img src="{{ program.real_estate_program.image.url }}" class="card-img-top" alt="{{ program.real_estate_program.name }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ program.real_estate_program.name }}</h5>
+                    <p class="card-text">{{ program.real_estate_program.description }}</p>
+                    <a href="{{ program.real_estate_program.get_absolute_url }}" class="btn btn-primary">Voir plus</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p>Vous ne suivez actuellement aucun programme.<br> Commencez à en suivre en cherchant<a href="{% url 'program_search' %}"> un programme ici</a>.</p>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import RealEstateDeveloper, RealEstateProgram, FollowedProgram, Country, City, Address
+from .models import RealEstateDeveloper, RealEstateProgram,UnvalidatedRealEstateProgram, FollowedProgram, Country, City, Address
 
 @admin.register(RealEstateDeveloper)
 class RealEstateDeveloperAdmin(admin.ModelAdmin):
@@ -8,9 +8,20 @@ class RealEstateDeveloperAdmin(admin.ModelAdmin):
 
 @admin.register(RealEstateProgram)
 class RealEstateProgramAdmin(admin.ModelAdmin):
-    list_display = ('name', 'address', 'developer','slug')
-    list_filter = ('developer',)
-    search_fields = ('name', 'location', 'developer__name','slug')
+    list_display = ['name', 'developer', 'end_date', 'validated']
+    list_filter = ['validated']
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.filter(validated=True)
+
+@admin.register(UnvalidatedRealEstateProgram)
+class UnvalidatedRealEstateProgramAdmin(admin.ModelAdmin):
+    list_display = ['name', 'developer', 'end_date']
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.filter(validated=False)
 
 @admin.register(FollowedProgram)
 class FollowedProgramAdmin(admin.ModelAdmin):

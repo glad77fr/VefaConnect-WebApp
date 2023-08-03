@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block content %}
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+<div class="container pt-5">
+  <div class="row justify-content-md-center">
+    <div class="col-md-8">
+      <h3 class="text-center">Ajouter un nouveau programme immobilier</h3>
+      <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="{{ form.name.id_for_label }}">Nom du programme*</label>
+          <input type="text" class="form-control {% if form.name.errors %}is-invalid{% endif %}" id="{{ form.name.id_for_label }}" name="{{ form.name.html_name }}" value="{{ form.name.value|default:'' }}" />
+          {% for error in form.name.errors %}
+            <div class="invalid-feedback">{{ error }}</div>
+          {% endfor %}
+        </div>
+        <div class="form-group">
+          <label for="{{ form.description.id_for_label }}">Description du programme</label>
+          <textarea class="form-control {% if form.description.errors %}is-invalid{% endif %}" id="{{ form.description.id_for_label }}" name="{{ form.description.html_name }}" >{{ form.description.value|default:'' }}</textarea>
+          {% for error in form.description.errors %}
+            <div class="invalid-feedback">{{ error }}</div>
+          {% endfor %}
+        </div>    
+        <div class="form-group">
+          <label for="{{ form.developer.id_for_label }}">Promoteur*</label>
+          {{ form.developer }}
+          {% for error in form.developer.errors %}
+            <div class="invalid-feedback">{{ error }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="form-group">
+          <label for="{{ form.image.id_for_label }}">Image du programme</label>
+          <div class="custom-file">
+            <input type="file" class="custom-file-input {% if form.image.errors %}is-invalid{% endif %}" id="{{ form.image.id_for_label }}" name="{{ form.image.html_name }}"/>
+            <label class="custom-file-label" for="{{ form.image.id_for_label }}">Choose file</label>
+            {% for error in form.image.errors %}
+              <div class="invalid-feedback">{{ error }}</div>
+            {% endfor %}
+          </div>
+        </div>
+          
+        <div class="form-group">
+          <label for="{{ form.end_date.id_for_label }}">Date de fin</label>
+          <input type="date" class="form-control {% if form.end_date.errors %}is-invalid{% endif %}" id="{{ form.end_date.id_for_label }}" name="{{ form.end_date.html_name }}" value="{{ form.end_date.value|default:'' }}" />
+          {% for error in form.end_date.errors %}
+            <div class="invalid-feedback">{{ error }}</div>
+          {% endfor %}
+        </div>
+        <hr/>
+        <h4>Adresse du programme</h4>
+        <div class="form-group">
+          <label for="{{ form.country.id_for_label }}">Pays *</label>
+          {{ form.country|add_class:"form-control select2" }}
+          {% for error in form.country.errors %}
+              <div class="invalid-feedback">{{ error }}</div>
+          {% endfor %}
+        </div>
+        <div class="form-group">
+          <label for="{{ form.city.id_for_label }}">Ville *</label>
+          {{ form.city|add_class:"form-control select2" }}
+          {% for error in form.city.errors %}
+              <div class="invalid-feedback">{{ error }}</div>
+          {% endfor %}
+        </div>
+        <div class="form-group">
+          <label for="{{ form.street.id_for_label }}">Rue *</label>
+          <input type="text" class="form-control {% if form.street.errors %}is-invalid{% endif %}" id="{{ form.street.id_for_label }}" name="{{ form.street.html_name }}" value="{{ form.street.value|default:'' }}" />
+          {% for error in form.street.errors %}
+            <div class="invalid-feedback">{{ error }}</div>
+          {% endfor %}
+        </div>
+        <button type="submit" class="btn btn-primary">Soumettre</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Initialize Select2 on 'country' and 'city' fields -->
+{% endblock %}
+{% block extra_js %}
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('.select2').select2();
+        });
+    </script>
+{% endblock %}
+{% block footer %}
+
+        {% endblock %}

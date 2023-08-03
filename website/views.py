@@ -10,6 +10,10 @@ from .models import RealEstateProgram, FollowedProgram
 from forum.models import UserProfile
 from django.views.generic import TemplateView
 from django.urls import reverse_lazy
+from .models import RealEstateProgram
+from .forms import RealEstateProgramForm
+
+
 
 # Create your views here.
 def home(request):
@@ -19,12 +23,13 @@ def ProgramSearchView(request):
     query = request.GET.get('q', '')
     search_performed = bool(query)
     if search_performed:
-        results = RealEstateProgram.objects.filter(Q(name__icontains=query) | Q(address__city__name__icontains=query))
+        results = RealEstateProgram.objects.filter(Q(name__icontains=query) | Q(address__city__name__icontains=query), validated=True)
     else:
-        results = RealEstateProgram.objects.order_by('?')[:10]
+        results = RealEstateProgram.objects.filter(validated=True).order_by('?')[:10]
 
     title = "Résultats de recherche" if search_performed else "Programmes"
     return render(request, 'program_search_results.html', {'results': results, 'query': query, 'search_performed': search_performed, 'title': title})
+
 
 class ProgramDetailView(DetailView):
     model = RealEstateProgram
@@ -88,3 +93,19 @@ class FollowedProgramConfirmationView(TemplateView):
             context['program'] = program
     
         return context
+    
+def create_program(request):
+    if request.method == "POST":
+        form = RealEstateProgramForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('program_search')
+    else:
+        form = RealEstateProgramForm()
+    return render(request, 'create_program.html', {'form': form})  
+
+@login_required
+def my_programs(request):
+    user_profile = UserProfile.objects.get(user=request.user)
+    followed_programs = FollowedProgram.objects.filter(user_profile=user_profile)
+    return render(request, 'my_programs.html', {'followed_programs': followed_programs})

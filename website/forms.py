@@ -1,5 +1,6 @@
 from django import forms
 from .models import FollowedProgram
+from .models import RealEstateProgram, Address,RealEstateDeveloper, Country,City
 
 class FollowedProgramForm(forms.ModelForm):
     IS_OWNER_CHOICES = [
@@ -23,3 +24,33 @@ class FollowedProgramForm(forms.ModelForm):
         self.fields['real_estate_program'].widget = forms.HiddenInput()
         self.fields['user_profile'].widget = forms.HiddenInput()
 
+
+class RealEstateProgramForm(forms.ModelForm):
+    class Meta:
+        model = RealEstateProgram
+        fields = ['name', 'description', 'developer', 'end_date', 'image', 'validated']
+
+    address = forms.ModelChoiceField(Address.objects.all(), required=False, widget=forms.HiddenInput())
+    image = forms.ImageField(widget=forms.FileInput(attrs={'class': 'custom-file-input'}))
+    country = forms.ModelChoiceField(queryset=Country.objects.all().order_by('name'), 
+                                     widget=forms.Select(attrs={'class': 'form-control select2'}))
+    city = forms.ModelChoiceField(queryset=City.objects.all().order_by('name'),
+                                  widget=forms.Select(attrs={'class': 'form-control select2'}))
+    street = forms.CharField()
+    developer = forms.ModelChoiceField(queryset=RealEstateDeveloper.objects.all().order_by('name'), 
+                                       widget=forms.Select(attrs={'class': 'form-control custom-select'}))
+
+    def save(self, commit=True):
+        program = super().save(commit=False)
+
+        if program.validated:
+            address = Address.objects.create(
+                country=self.cleaned_data.get('country'),
+                city=self.cleaned_data.get('city'),
+                street=self.cleaned_data.get('street')
+            )
+            program.address = address
+
+        if commit:  
+            program.save()
+        return program

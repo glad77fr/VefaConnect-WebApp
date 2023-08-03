@@ -17,8 +17,18 @@
         </ul>
         <ul class="navbar-nav ml-auto">
             {% if user.is_authenticated %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <img src="{{ user.userprofile.photo.url  }}" class="rounded-circle" style="width:40px; height:40px; object-fit:cover;" alt="Avatar">
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="{% url 'profile' %}">Mon profil</a>
+                    <a class="dropdown-item" href="{% url 'my_programs' %}">Mes programmes</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="{% url 'logout' %}">Se déconnecter</a>
+                </div>
+            </li>
+            
             {% else %}
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'login'%}">Login </a> 
