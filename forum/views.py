@@ -5,6 +5,13 @@ from .forms import UserRegisterForm, UserProfileForm
 from django.core.mail import send_mail
 from django.contrib import messages 
 from django.contrib.auth.decorators import login_required
+from .models import Forum, ForumTheme, ForumPost, Reply
+from django.shortcuts import render, get_object_or_404
+from .models import ForumTheme
+from django.views import View
+from .forms import CreatePostForm
+from django.views.generic import DetailView
+
 
 def login_view(request):
     if request.method == "POST":
@@ -77,3 +84,43 @@ def profile(request):
     else:
         form = UserProfileForm(request.POST, request.FILES, instance=request.user.userprofile)
     return render(request, 'profile.html', {'form': form})
+
+def general_forum_view(request):
+    forum = get_object_or_404(Forum, name="General forum")
+    themes = forum.themes.all().order_by('order')
+    return render(request, 'general_forum.html', {'forum': forum, 'themes': themes})
+
+class ForumThemeView(View):
+    def get(self, request, topic_slug):
+        topic = ForumTheme.objects.get(slug=topic_slug)
+        posts = topic.posts.all().order_by('-date_posted')
+        context = {
+            'topic': topic,
+            'posts': posts
+        }
+        return render(request, 'forum_theme_detail.html', context)
+    
+class CreatePostView(View):
+    def get(self, request, *args, **kwargs):
+        form = CreatePostForm()
+        return render(request, 'create_post.html', {'form': form})
+
+    def post(self, request, *args, **kwargs):
+        form = CreatePostForm(request.POST)
+        if form.is_valid():
+            new_post = form.save(commit=False)
+            new_post.user = request.user.userprofile  # Attaching the UserProfile to the post, not the User
+            new_post.theme = ForumTheme.objects.get(id=1)  # Replace with the appropriate logic to get the Theme
+            new_post.save()
+            return redirect('post_detail', pk=new_post.id)
+        return render(request, 'create_post.html', {'form': form})
+
+class PostDetailView(DetailView):
+    model = ForumPost
+    template_name = 'post_detail.html'
+    context_object_name = 'post'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['replies'] = Reply.objects.filter(post=self.object)
+        return context

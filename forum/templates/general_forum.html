@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Forum Général{% endblock %}
+
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'website/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+</head>
+
+<div class="container my-5">
+    <h1>{{ forum.name }}</h1>
+
+    <table class="table table-striped mt-4">
+        <thead>
+            <tr>
+                <th scope="col">Thème</th>
+                <th scope="col">Description</th>
+                <th scope="col">Posts</th>
+                <th scope="col">Last Activity</th>  <!-- Added column header -->
+            </tr>
+        </thead>
+        <tbody>
+            {% for theme in themes %}
+                <tr>
+                    <td>
+                        <!-- Nous ajoutons ici le lien vers la vue topic en utilisant le slug du topic -->
+                        <a href="{% url 'forum_theme_detail' topic_slug=theme.slug %}">{{ theme.title }}</a>
+                    </td>
+                    <td>{{ theme.description }}</td>
+                    <td>
+                        <i class="fas fa-comments"></i> <!-- Font Awesome comments icon -->
+                        {{ theme.total_post_count|default:"0" }}
+                    </td>
+                    <td>
+                        {% if theme.get_last_activity_date %}
+                            Last activity: {{ theme.get_last_activity_date|date:"d/m/Y H:i" }}
+                        {% endif %}
+                    </td> <!-- New cell for Last Activity -->
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

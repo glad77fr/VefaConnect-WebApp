@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Post Details{% endblock %}
+
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'website/style.css' %}">
+</head>
+
+<div class="container my-5">
+    <!-- Original Post -->
+    <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between">
+            <div>
+                <img src="{{ post.user.photo.url }}" class="rounded-circle mr-2" width="30" height="30">
+                <span class="font-weight-bold">{{ post.user.user.username }}</span>
+            </div>
+            <div>
+                <span class="text-muted">{{ post.date_posted|date:"d/m/Y H:i" }}</span>
+            </div>
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">{{ post.title }}</h5>
+            <p class="card-text">{{ post.content }}</p>
+        </div>
+    </div>
+
+    <!-- Replies -->
+    {% for reply in post.replies.all %}
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between">
+                <div>
+                    <img src="{{ reply.user.photo.url }}" class="rounded-circle mr-2" width="30" height="30">
+                    <span class="font-weight-bold">{{ reply.user.user.username }}</span>
+                </div>
+                <div>
+                    <span class="text-muted">{{ reply.date_posted|date:"d/m/Y H:i" }}</span>
+                </div>
+            </div>
+            <div class="card-body">
+                <p class="card-text">{{ reply.content }}</p>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

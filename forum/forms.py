@@ -3,6 +3,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import UserProfile
+from .models import ForumPost
 
 class UserRegisterForm(UserCreationForm):
 
@@ -112,3 +113,8 @@ class UserProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
         fields = ['bio', 'photo']
+
+class CreatePostForm(forms.ModelForm):
+    class Meta:
+        model = ForumPost
+        fields = ['title', 'content', 'real_estate_program', 'attachment']
