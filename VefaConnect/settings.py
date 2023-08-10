@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'website',
     'forum',
      'widget_tweaks',
+      'ckeditor',
 ]
 
 MIDDLEWARE = [

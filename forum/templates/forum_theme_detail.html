@@ -33,7 +33,7 @@
             </div>
             <div class="card-body">
                 <!-- We make the title a clickable link that directs to the post detail page -->
-                <a href=""><h5 class="card-title">{{ post.title }}</h5></a>
+                <a href="{% url 'post_detail' pk=post.id %}"><h5 class="card-title">{{ post.title }}</h5></a>
             </div>
             <div class="card-footer text-muted">
                 Last response: {{ post.get_last_response_date|date:"d/m/Y H:i" }}
