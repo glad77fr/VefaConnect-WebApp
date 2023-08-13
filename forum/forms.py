@@ -4,6 +4,8 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import UserProfile
 from .models import ForumPost
+from ckeditor_uploader.widgets import CKEditorUploadingWidget
+
 
 class UserRegisterForm(UserCreationForm):
 
@@ -115,6 +117,7 @@ class UserProfileForm(forms.ModelForm):
         fields = ['bio', 'photo']
 
 class CreatePostForm(forms.ModelForm):
+    content = forms.CharField(widget=CKEditorUploadingWidget())
     class Meta:
         model = ForumPost
         fields = ['title', 'content', 'real_estate_program', 'attachment']
