@@ -1,6 +1,5 @@
 {% extends 'base.html' %}
 {% load static %}
-
 {% block title %}Post Details{% endblock %}
 
 {% block content %}
@@ -8,11 +7,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
 
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="{% static 'website/style.css' %}">
+    <link rel="stylesheet" href="{% static 'forum/css/style.css' %}">
+    {{ reply_form.media }}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 </head>
 
 <div class="container my-5">
@@ -29,26 +32,90 @@
         </div>
         <div class="card-body">
             <h5 class="card-title">{{ post.title }}</h5>
-            <p class="card-text">{{ post.content|safe  }}</p>
+            <p class="card-text">{{ post.content|safe }}</p>
         </div>
+        <div class="card-footer d-flex justify-content-end">
+            <button id="showReplyForm" class="btn btn-primary">Répondre</button>
+        </div> 
     </div>
 
     <!-- Replies -->
-    {% for reply in post.replies.all %}
-        <div class="card mb-4">
-            <div class="card-header d-flex justify-content-between">
-                <div>
-                    <img src="{{ reply.user.photo.url }}" class="rounded-circle mr-2" width="30" height="30">
-                    <span class="font-weight-bold">{{ reply.user.user.username }}</span>
+    <div id="repliesContainer">
+        {% for reply in post.replies.all %}
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between">
+                    <div>
+                        <img src="{{ reply.user.photo.url }}" class="rounded-circle mr-2" width="30" height="30">
+                        <span class="font-weight-bold">{{ reply.user.user.username }}</span>
+                    </div>
+                    <div>
+                        <span class="text-muted">{{ reply.date_posted|date:"d/m/Y H:i" }}</span>
+                    </div>
                 </div>
-                <div>
-                    <span class="text-muted">{{ reply.date_posted|date:"d/m/Y H:i" }}</span>
+                <div class="card-body">
+                    <p class="card-text">{{ reply.content|safe }}</p>
                 </div>
             </div>
-            <div class="card-body">
-                <p class="card-text">{{ reply.content}}</p>
+        {% endfor %}
+    </div>
+
+    <!-- Container for the reply form. Initially hidden -->
+    <div id="replyFormContainer" style="display:none;">
+        <form id="replyForm" action="{% url 'reply_to_post' post.id %}" method="post" enctype="multipart/form-data" >
+            {% csrf_token %}
+            <div class="form-group">
+                {{ reply_form.content }}
             </div>
-        </div>
-    {% endfor %}
+            <button type="submit" class="btn btn-primary">Envoyer</button>
+        </form>
+    </div>
 </div>
+
+<script>
+    $('#showReplyForm').click(function() {
+        $('#replyFormContainer').toggle();
+        $('#replyForm textarea[name="content"]').val('');
+        $('html, body').animate({
+            scrollTop: $("#replyFormContainer").offset().top
+        }, 1000);
+    });
+
+    $("#replyForm").submit(function(event) {
+        event.preventDefault();
+
+        // Si vous utilisez CKEditor
+        if (typeof CKEDITOR !== 'undefined') {
+            CKEDITOR.instances['id_content'].updateElement();
+        }
+
+        $.ajax({
+            url: $(this).attr("action"),
+            type: 'POST',
+            data: $(this).serialize(),
+            headers: {
+                "X-CSRFToken": '{{ csrf_token }}'
+            },
+            success: function(response) {
+                if(response.error) {
+                    alert(response.error);
+                } else {
+                    $("#repliesContainer").append(response.reply_html);
+                    $('#replyFormContainer').hide();
+
+                    // Réinitialiser le champ de réponse de CKEditor
+                    if (typeof CKEDITOR !== 'undefined') {
+                        CKEDITOR.instances['id_content'].setData('');
+                    }
+
+                    var $lastReply = $("#repliesContainer .card").last();
+                    $('html, body').animate({
+                        scrollTop: $lastReply.offset().top
+                    }, 1000);
+                }
+            }
+        });
+    });
+</script>
+
+</script>
 {% endblock %}

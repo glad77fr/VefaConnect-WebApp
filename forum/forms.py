@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from .models import UserProfile
 from .models import ForumPost
 from ckeditor_uploader.widgets import CKEditorUploadingWidget
+from .models import Reply
 
 
 class UserRegisterForm(UserCreationForm):
@@ -117,7 +118,27 @@ class UserProfileForm(forms.ModelForm):
         fields = ['bio', 'photo']
 
 class CreatePostForm(forms.ModelForm):
-    content = forms.CharField(widget=CKEditorUploadingWidget())
+    title = forms.CharField(
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'style': 'width: 50%;',
+            'placeholder': 'Titre'  
+        })
+    )
+    
+    content = forms.CharField(
+        widget=CKEditorUploadingWidget()
+    )
     class Meta:
         model = ForumPost
-        fields = ['title', 'content', 'real_estate_program', 'attachment']
+        fields = ['title', 'content', 'real_estate_program']
+
+class ReplyModelForm(forms.ModelForm):
+    content = forms.CharField(
+        widget=CKEditorUploadingWidget(),
+        required=True
+    )
+
+    class Meta:
+        model = Reply
+        fields = ['content']

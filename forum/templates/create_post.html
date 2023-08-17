@@ -9,9 +9,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {{ form.media }}
 
-
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="{% static 'website/style.css' %}">
+    <link rel="stylesheet" href="{% static 'forum/css/style.css' %}">
 </head>
 
 <div class="container my-5">
@@ -19,19 +18,18 @@
 
     <form method="post" enctype="multipart/form-data" class="bg-light p-5 rounded shadow">
         {% csrf_token %}
-        <div class="form-group">
-            {{ form.title }}
+        <div class="row"> <!-- Ajout de la classe row -->
+            <div class="form-group col-md-10">      
+                {{ form.title }}
+            </div>
         </div>
         <div class="form-group">
             {{ form.content }}
         </div>
-        <div class="form-group">
-            <label for="id_attachment">Pièce jointe</label>
-            {{ form.attachment }}
-        </div>  
-        <div class="form-group text-center">
+        <div class="form-group d-flex justify-content-end">
             <button class="btn btn-primary">Envoyer</button>
         </div>
+        
     </form>
 </div>
 

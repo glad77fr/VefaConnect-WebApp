@@ -11,7 +11,9 @@ from .models import ForumTheme
 from django.views import View
 from .forms import CreatePostForm
 from django.views.generic import DetailView
-
+from django.template.loader import render_to_string
+from django.http import JsonResponse
+from .forms import ReplyModelForm
 
 def login_view(request):
     if request.method == "POST":
@@ -123,4 +125,30 @@ class PostDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['replies'] = Reply.objects.filter(post=self.object)
+        context['reply_form'] = ReplyModelForm()  # Ajoutez le formulaire au contexte
         return context
+    
+def reply_to_post(request, post_id):
+    post = get_object_or_404(ForumPost, id=post_id)
+    user = request.user
+    user_profile = user.userprofile  
+
+    if request.method == "POST":
+        form = ReplyModelForm(request.POST)
+        if form.is_valid():
+            content = form.cleaned_data['content']
+            reply = Reply.objects.create(user=user_profile, post=post, content=content)
+
+            html = render_to_string('path_to_reply_template.html', {'reply': reply})
+
+            return JsonResponse({'reply_html': html})
+        if not form.is_valid():
+            print(form.errors)
+
+    # En cas d'erreur, vous pouvez retourner une réponse d'erreur 
+    # (cela dépend de la façon dont vous souhaitez gérer les erreurs côté client)
+    return JsonResponse({'error': 'Invalid form data.'}, status=400)
+
+
+
+

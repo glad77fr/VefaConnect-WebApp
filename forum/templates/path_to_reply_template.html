@@ -1,0 +1,16 @@
+<!-- Supposons que 'reply' soit l'objet Reply que vous avez transmis au template -->
+
+<div class="card mb-4">
+    <div class="card-header d-flex justify-content-between">
+        <div>
+            <img src="{{ reply.user.photo.url }}" class="rounded-circle mr-2" width="30" height="30">
+            <span class="font-weight-bold">{{ reply.user.user.username }}</span>
+        </div>
+        <div>
+            <span class="text-muted">{{ reply.date_posted|date:"d/m/Y H:i" }}</span>
+        </div>
+    </div>
+    <div class="card-body">
+        <p class="card-text">{{ reply.content|safe }}</p>
+    </div>
+</div>

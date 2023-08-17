@@ -96,11 +96,10 @@ class ForumPost(models.Model):
     real_estate_program = models.ForeignKey(RealEstateProgram, on_delete=models.CASCADE, blank=True, null=True)
     content = models.TextField()
     date_posted = models.DateTimeField(auto_now_add=True)
-    attachment = models.FileField(upload_to='user_attachments/', blank=True, null=True)
+
 
 class Reply(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     post = models.ForeignKey(ForumPost, on_delete=models.CASCADE, related_name='replies')
     content = models.TextField()
     date_posted = models.DateTimeField(auto_now_add=True)
-    attachment = models.FileField(upload_to='user_attachments/', blank=True, null=True)
