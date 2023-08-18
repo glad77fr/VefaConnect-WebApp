@@ -17,9 +17,79 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 </head>
+    
+
 
 <div class="container my-5">
     <!-- Original Post -->
+     <!-- Reply Button and Elegant Horizontal Line -->
+     <div class="reply-btn-container">
+        <button id="showReplyForm" class="btn btn-primary">Répondre</button>
+    </div>
+
+    <div class="mb-4">
+        <input type="hidden" id="currentPage" value="{{ replies.number }}">
+        <input type="hidden" id="totalPages" value="{{ replies.paginator.num_pages }}">
+
+
+        <ul class="pagination">
+            {% if replies.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1" aria-label="First">
+                        <span aria-hidden="true">&laquo;&laquo;</span>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ replies.previous_page_number }}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" aria-label="First">
+                        <span aria-hidden="true">&laquo;&laquo;</span>
+                    </a>
+                </li>
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+            {% endif %}
+    
+            <!-- Indicateur de page actuelle -->
+            <li class="page-item disabled">
+                <a class="page-link" href="#">Page {{ replies.number }} de {{ replies.paginator.num_pages }}</a>
+            </li>
+    
+            {% if replies.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ replies.next_page_number }}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ replies.paginator.num_pages }}" aria-label="Last">
+                        <span aria-hidden="true">&raquo;&raquo;</span>
+                    </a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" aria-label="Last">
+                        <span aria-hidden="true">&raquo;&raquo;</span>
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+    
+    <hr class="elegant-hr">
+
     <div class="card mb-4">
         <div class="card-header d-flex justify-content-between">
             <div>
@@ -34,14 +104,11 @@
             <h5 class="card-title">{{ post.title }}</h5>
             <p class="card-text">{{ post.content|safe }}</p>
         </div>
-        <div class="card-footer d-flex justify-content-end">
-            <button id="showReplyForm" class="btn btn-primary">Répondre</button>
-        </div> 
     </div>
 
     <!-- Replies -->
     <div id="repliesContainer">
-        {% for reply in post.replies.all %}
+        {% for reply in replies %}
             <div class="card mb-4">
                 <div class="card-header d-flex justify-content-between">
                     <div>
@@ -64,7 +131,7 @@
         <form id="replyForm" action="{% url 'reply_to_post' post.id %}" method="post" enctype="multipart/form-data" >
             {% csrf_token %}
             <div class="form-group">
-                {{ reply_form.content }}
+                {{ reply_form.content }}                
             </div>
             <button type="submit" class="btn btn-primary">Envoyer</button>
         </form>
@@ -72,6 +139,7 @@
 </div>
 
 <script>
+   
     $('#showReplyForm').click(function() {
         $('#replyFormContainer').toggle();
         $('#replyForm textarea[name="content"]').val('');
@@ -96,26 +164,35 @@
                 "X-CSRFToken": '{{ csrf_token }}'
             },
             success: function(response) {
-                if(response.error) {
+                if (response.error) {
                     alert(response.error);
                 } else {
-                    $("#repliesContainer").append(response.reply_html);
-                    $('#replyFormContainer').hide();
+                    // Vérifiez si l'utilisateur est sur la dernière page
+                    const currentPage = parseInt(document.getElementById('currentPage').value, 10);
+                    const totalPages = parseInt(document.getElementById('totalPages').value, 10);
+                    
 
-                    // Réinitialiser le champ de réponse de CKEditor
-                    if (typeof CKEDITOR !== 'undefined') {
-                        CKEDITOR.instances['id_content'].setData('');
+                    if (currentPage < totalPages) {
+                        // Redirigez l'utilisateur vers la dernière page
+                        location.href = "?page=" + totalPages;
+                    } else {
+                        $("#repliesContainer").append(response.reply_html);
+                        $('#replyFormContainer').hide();
+
+                        // Réinitialiser le champ de réponse de CKEditor
+                        if (typeof CKEDITOR !== 'undefined') {
+                            CKEDITOR.instances['id_content'].setData('');
+                        }
+
+                        var $lastReply = $("#repliesContainer .card").last();
+                        $('html, body').animate({
+                            scrollTop: $lastReply.offset().top
+                        }, 1000);
                     }
-
-                    var $lastReply = $("#repliesContainer .card").last();
-                    $('html, body').animate({
-                        scrollTop: $lastReply.offset().top
-                    }, 1000);
                 }
             }
         });
     });
 </script>
 
-</script>
 {% endblock %}

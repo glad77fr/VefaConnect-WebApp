@@ -16,7 +16,7 @@ urlpatterns = [
     path('topic/<slug:topic_slug>/', ForumThemeView.as_view(), name='forum_theme_detail'),
     path('create_post/', CreatePostView.as_view(), name='create_post'),
     path('post/<int:pk>/', views.PostDetailView.as_view(), name='post_detail'),
-    path('post/<int:post_id>/reply/', reply_to_post, name='reply_to_post')
+    path('post/<int:post_id>/reply/', reply_to_post, name='reply_to_post'),
 
     
 ]

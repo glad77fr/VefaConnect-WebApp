@@ -14,6 +14,7 @@ from django.views.generic import DetailView
 from django.template.loader import render_to_string
 from django.http import JsonResponse
 from .forms import ReplyModelForm
+from django.core.paginator import Paginator
 
 def login_view(request):
     if request.method == "POST":
@@ -124,8 +125,14 @@ class PostDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['replies'] = Reply.objects.filter(post=self.object)
-        context['reply_form'] = ReplyModelForm()  # Ajoutez le formulaire au contexte
+        
+        replies = Reply.objects.filter(post=self.object).order_by('date_posted')
+        paginator = Paginator(replies, 10)
+        
+        page = self.request.GET.get('page')
+        context['replies'] = paginator.get_page(page)
+        # Ajouter une instance du formulaire au contexte
+        context['reply_form'] = ReplyModelForm()
         return context
     
 def reply_to_post(request, post_id):
@@ -142,12 +149,23 @@ def reply_to_post(request, post_id):
             html = render_to_string('path_to_reply_template.html', {'reply': reply})
 
             return JsonResponse({'reply_html': html})
-        if not form.is_valid():
+        if not form.is_valid(): 
             print(form.errors)
 
     # En cas d'erreur, vous pouvez retourner une réponse d'erreur 
     # (cela dépend de la façon dont vous souhaitez gérer les erreurs côté client)
     return JsonResponse({'error': 'Invalid form data.'}, status=400)
+
+def load_more_replies(request, post_id, page):
+    post = get_object_or_404(ForumPost, id=post_id)
+    replies = Reply.objects.filter(post=post)
+    
+    paginator = Paginator(replies, 10)
+    current_page_replies = paginator.get_page(page)
+    
+    html = render_to_string('path_to_replies_template.html', {'replies': current_page_replies})
+
+    return JsonResponse({'replies_html': html})
 
 
 
