@@ -15,6 +15,8 @@ from django.template.loader import render_to_string
 from django.http import JsonResponse
 from .forms import ReplyModelForm
 from django.core.paginator import Paginator
+from django.utils.decorators import method_decorator
+from django.http import HttpResponse
 
 def login_view(request):
     if request.method == "POST":
@@ -93,16 +95,24 @@ def general_forum_view(request):
     themes = forum.themes.all().order_by('order')
     return render(request, 'general_forum.html', {'forum': forum, 'themes': themes})
 
+
 class ForumThemeView(View):
     def get(self, request, topic_slug):
         topic = ForumTheme.objects.get(slug=topic_slug)
-        posts = topic.posts.all().order_by('-date_posted')
+        posts_all = topic.posts.all().order_by('-date_posted')
+
+        # Pagination
+        paginator = Paginator(posts_all, 10)  # Show 10 posts per page
+        page = request.GET.get('page')
+        posts = paginator.get_page(page)
+
         context = {
             'topic': topic,
             'posts': posts
         }
         return render(request, 'forum_theme_detail.html', context)
-    
+
+@method_decorator(login_required(login_url='access_denied'), name='dispatch')    
 class CreatePostView(View):
     def get(self, request, *args, **kwargs):
         form = CreatePostForm()
@@ -134,11 +144,18 @@ class PostDetailView(DetailView):
         # Ajouter une instance du formulaire au contexte
         context['reply_form'] = ReplyModelForm()
         return context
-    
+
+
 def reply_to_post(request, post_id):
     post = get_object_or_404(ForumPost, id=post_id)
     user = request.user
-    user_profile = user.userprofile  
+
+     # Vérifier si l'utilisateur est authentifié
+    if not request.user.is_authenticated:
+        return HttpResponse(status=401)  # Code 401 pour "non autorisé"
+    
+    user_profile = user.userprofile
+
 
     if request.method == "POST":
         form = ReplyModelForm(request.POST)
@@ -146,14 +163,12 @@ def reply_to_post(request, post_id):
             content = form.cleaned_data['content']
             reply = Reply.objects.create(user=user_profile, post=post, content=content)
 
-            html = render_to_string('path_to_reply_template.html', {'reply': reply})
+            html = render_to_string('reply_template.html', {'reply': reply})
 
             return JsonResponse({'reply_html': html})
         if not form.is_valid(): 
             print(form.errors)
 
-    # En cas d'erreur, vous pouvez retourner une réponse d'erreur 
-    # (cela dépend de la façon dont vous souhaitez gérer les erreurs côté client)
     return JsonResponse({'error': 'Invalid form data.'}, status=400)
 
 def load_more_replies(request, post_id, page):
@@ -163,9 +178,12 @@ def load_more_replies(request, post_id, page):
     paginator = Paginator(replies, 10)
     current_page_replies = paginator.get_page(page)
     
-    html = render_to_string('path_to_replies_template.html', {'replies': current_page_replies})
+    html = render_to_string('reply_template.html', {'replies': current_page_replies})
 
     return JsonResponse({'replies_html': html})
+
+def access_denied(request):
+    return render(request, 'access_denied.html')
 
 
 

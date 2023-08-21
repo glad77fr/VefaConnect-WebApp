@@ -9,8 +9,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="{% static 'website/style.css' %}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'forum/css/style.css' %}">
+
+    <!-- Font Awesome CSS -->
+    <link href="{% static 'fontawesomefree/css/fontawesome.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'fontawesomefree/css/brands.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'fontawesomefree/css/solid.css' %}" rel="stylesheet" type="text/css">
+
+    <style>
+        /* Custom style for icons to fill the height of their cells */
+        .icon-full-height {
+            height: 100%;
+            font-size: 1.5em; /* Adjust this value to your preference */
+        }
+    </style>
 </head>
 
 <div class="container my-5">
@@ -19,29 +31,47 @@
     <table class="table table-striped mt-4">
         <thead>
             <tr>
-                <th scope="col">Thème</th>
-                <th scope="col">Description</th>
-                <th scope="col">Posts</th>
-                <th scope="col">Last Activity</th>  <!-- Added column header -->
+                <th scope="col"></th> <!-- Empty header for icons -->
+                <th scope="col">Thèmes</th>
+                <th scope="col">Sujet(s)</th>  <!-- Added column header -->
+                <th scope="col">Réponse(s)</th>  <!-- Added column header -->
+                <th scope="col">Dernière activité</th>
             </tr>
         </thead>
         <tbody>
             {% for theme in themes %}
                 <tr>
-                    <td>
-                        <!-- Nous ajoutons ici le lien vers la vue topic en utilisant le slug du topic -->
-                        <a href="{% url 'forum_theme_detail' topic_slug=theme.slug %}">{{ theme.title }}</a>
+                    <!-- Icon Cell -->
+                    <td class="align-middle">
+                        {% if theme.icon_class %}
+                            <i class="{{ theme.icon_class }} icon-full-height"></i>
+                        {% endif %}
                     </td>
-                    <td>{{ theme.description }}</td>
+
+                    <!-- Thème & Description Cell -->
                     <td>
-                        <i class="fas fa-comments"></i> <!-- Font Awesome comments icon -->
-                        {{ theme.total_post_count|default:"0" }}
+                        <!-- Lien vers le thème -->
+                        <div><a href="{% url 'forum_theme_detail' topic_slug=theme.slug %}">{{ theme.title }}</a></div>
+                        <!-- Description en dessous du thème -->
+                        <div>{{ theme.description }}</div>
                     </td>
+
+                    <!-- Post Count Cell -->
+                    <td>
+                        {{ theme.post_count|default:"0" }}
+                    </td>
+
+                    <!-- Reply Count Cell -->
+                    <td>
+                        {{ theme.reply_count|default:"0" }}
+                    </td>
+
+                    <!-- Last Activity Cell -->
                     <td>
                         {% if theme.get_last_activity_date %}
-                            Last activity: {{ theme.get_last_activity_date|date:"d/m/Y H:i" }}
+                            Dernière activité: {{ theme.get_last_activity_date|date:"d/m/Y H:i" }}
                         {% endif %}
-                    </td> <!-- New cell for Last Activity -->
+                    </td>
                 </tr>
             {% endfor %}
         </tbody>

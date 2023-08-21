@@ -12,14 +12,70 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
 
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="{% static 'website/style.css' %}">
+    <link rel="stylesheet" href="{% static 'forum/css/style.css' %}">
 </head>
 
 <div class="container my-5">
-    <h1>{{ theme.title }} Forum</h1>
-    <div class="my-4">
-        <a href="{% url 'create_post' %}" class="btn btn-primary">Create New Post</a>
-    </div>    
+    <div class="d-flex justify-content-between align-items-center">
+        <h1>{{ topic.title }}</h1>
+        <a href="{% url 'create_post' %}" class="btn btn-primary">Nouveau sujet</a>
+    </div>
+    <hr class="elegant-line">
+    <ul class="pagination">
+        {% if posts.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page=1" aria-label="First">
+                    <span aria-hidden="true">&laquo;&laquo;</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ posts.previous_page_number }}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+        {% else %}
+            <li class="page-item disabled">
+                <a class="page-link" href="#" aria-label="First">
+                    <span aria-hidden="true">&laquo;&laquo;</span>
+                </a>
+            </li>
+            <li class="page-item disabled">
+                <a class="page-link" href="#" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+        {% endif %}
+
+        <!-- Indicateur de page actuelle -->
+        <li class="page-item disabled">
+            <a class="page-link" href="#">Page {{ posts.number }} de {{ posts.paginator.num_pages }}</a>
+        </li>
+
+        {% if posts.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ posts.next_page_number }}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ posts.paginator.num_pages }}" aria-label="Last">
+                    <span aria-hidden="true">&raquo;&raquo;</span>
+                </a>
+            </li>
+        {% else %}
+            <li class="page-item disabled">
+                <a class="page-link" href="#" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+            <li class="page-item disabled">
+                <a class="page-link" href="#" aria-label="Last">
+                    <span aria-hidden="true">&raquo;&raquo;</span>
+                </a>
+            </li>
+        {% endif %}
+    </ul>
+
     {% for post in posts %}
         <div class="card mb-4">
             <div class="card-header d-flex justify-content-between">
@@ -28,15 +84,18 @@
                     <span class="font-weight-bold">{{ post.user.user.username }}</span>
                 </div>
                 <div>
-                    <span class="badge badge-secondary">{{ post.replies.count }} responses</span>
+                    <span class="badge badge-secondary">{{ post.replies.count }} réponses</span>
                 </div>
             </div>
             <div class="card-body">
+ 
                 <!-- We make the title a clickable link that directs to the post detail page -->
                 <a href="{% url 'post_detail' pk=post.id %}"><h5 class="card-title">{{ post.title }}</h5></a>
             </div>
             <div class="card-footer text-muted">
-                Last response: {{ post.get_last_response_date|date:"d/m/Y H:i" }}
+                {% if post.last_reply %}
+                Dernière réponse: {{ post.last_reply|date:"d/m/Y H:i" }}
+                {% endif %}
             </div>
         </div>
     {% endfor %}

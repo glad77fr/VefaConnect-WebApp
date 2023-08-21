@@ -6,6 +6,8 @@ from .views import ForumThemeView
 from .views import CreatePostView
 from .views import PostDetailView
 from .views import reply_to_post
+from .views import access_denied
+
 
 urlpatterns = [
     path('login/', views.login_view, name='login'),
@@ -17,6 +19,8 @@ urlpatterns = [
     path('create_post/', CreatePostView.as_view(), name='create_post'),
     path('post/<int:pk>/', views.PostDetailView.as_view(), name='post_detail'),
     path('post/<int:post_id>/reply/', reply_to_post, name='reply_to_post'),
+    path('access-denied/', access_denied, name='access_denied'),
+
 
     
 ]

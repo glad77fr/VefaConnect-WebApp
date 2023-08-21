@@ -51,6 +51,7 @@ class ForumTheme(models.Model):
     description = models.TextField(blank=True)
     forum = models.ForeignKey(Forum, on_delete=models.CASCADE, related_name='themes')
     order = models.IntegerField(default=0)
+    icon_class = models.CharField(max_length=100, null=True, blank=True)
     slug = models.SlugField(unique=True, blank=True)
 
     def __str__(self):
@@ -78,16 +79,14 @@ class ForumTheme(models.Model):
                     break
                 self.slug = '%s-%d' % (original_slug, x)
         super().save(*args, **kwargs)
+    
+    def post_count(self):
+        """Retourne le nombre de posts directement liés à ce thème."""
+        return self.posts.count()
 
-    def total_post_count(self):
-        # On compte d'abord le nombre de posts directement liés à ce thème
-        post_count = self.posts.count()
-
-        # Ensuite, on compte le nombre de réponses à tous les posts de ce thème
-        reply_count = Reply.objects.filter(post__in=self.posts.all()).count()
-
-        # On retourne la somme des deux chiffres pour obtenir le total
-        return post_count + reply_count
+    def reply_count(self):
+        """Retourne le nombre de réponses à tous les posts de ce thème."""
+        return Reply.objects.filter(post__in=self.posts.all()).count()
 
 class ForumPost(models.Model):
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
@@ -96,6 +95,12 @@ class ForumPost(models.Model):
     real_estate_program = models.ForeignKey(RealEstateProgram, on_delete=models.CASCADE, blank=True, null=True)
     content = models.TextField()
     date_posted = models.DateTimeField(auto_now_add=True)
+
+    def last_reply(self):
+        last_reply = self.replies.aggregate(Max('date_posted'))['date_posted__max']
+        
+        if last_reply :
+            return last_reply
 
 
 class Reply(models.Model):

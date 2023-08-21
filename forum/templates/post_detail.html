@@ -23,16 +23,14 @@
 <div class="container my-5">
     <!-- Original Post -->
      <!-- Reply Button and Elegant Horizontal Line -->
-     <div class="reply-btn-container">
-        <button id="showReplyForm" class="btn btn-primary">Répondre</button>
-    </div>
+   
 
-    <div class="mb-4">
+    <div class="mb-4 d-flex align-items-center">
         <input type="hidden" id="currentPage" value="{{ replies.number }}">
         <input type="hidden" id="totalPages" value="{{ replies.paginator.num_pages }}">
 
 
-        <ul class="pagination">
+        <ul class="pagination mr-auto">
             {% if replies.has_previous %}
                 <li class="page-item">
                     <a class="page-link" href="?page=1" aria-label="First">
@@ -86,6 +84,9 @@
                 </li>
             {% endif %}
         </ul>
+          <div class="reply-btn-container">
+        <button id="showReplyForm" class="btn btn-primary">Répondre</button>
+        </div>
     </div>
     
     <hr class="elegant-hr">
@@ -139,8 +140,13 @@
 </div>
 
 <script>
-   
+    
     $('#showReplyForm').click(function() {
+         // Vérifier si l'utilisateur est authentifié
+        {% if not request.user.is_authenticated %}
+        window.location.href = "/access-denied/" 
+        return; // Sortir de la fonction
+        {% endif %}
         $('#replyFormContainer').toggle();
         $('#replyForm textarea[name="content"]').val('');
         $('html, body').animate({
@@ -190,7 +196,8 @@
                         }, 1000);
                     }
                 }
-            }
+            },
+            
         });
     });
 </script>

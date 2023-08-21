@@ -1,0 +1,14 @@
+<!-- templates/forum/access_denied.html -->
+
+{% extends 'base.html' %}
+
+{% block title %}Accès Refusé{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>Accès Refusé</h1>
+    <p>Vous devez être connecté pour accéder à cette page.</p>
+    <p>Si vous n'avez pas encore de compte, vous pouvez en créer un en suivant le lien ci-dessous.</p>
+    <a href="{% url 'register' %}" class="btn btn-primary">S'inscrire</a>
+</div>
+{% endblock %}

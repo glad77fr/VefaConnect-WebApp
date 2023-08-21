@@ -17,7 +17,7 @@ class ForumAdmin(admin.ModelAdmin):
 # Configuration de l'administration pour le modèle ForumTheme
 @admin.register(ForumTheme)
 class ForumThemeAdmin(admin.ModelAdmin):
-    list_display = ('title', 'forum','order','slug')
+    list_display = ('title', 'forum','order','icon_class', 'slug')
     list_filter = ('forum','order')
 
 # Configuration de l'administration pour le modèle ForumPost
