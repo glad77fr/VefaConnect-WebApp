@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Programmes suivis{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h1>Mes programmes suivis</h1>
+    <hr>
+    {% if object_list %}
+        <ul class="list-group">
+            {% for programme in object_list %}
+                <li class="list-group-item">
+                    {{ programme.name }}  <!-- Supposant que votre modèle Programme a un champ nom -->
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="alert alert-warning">Vous ne suivez actuellement aucun programme.</p>
+    {% endif %}
+</div>
+{% endblock %}

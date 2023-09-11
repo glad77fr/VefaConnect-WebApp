@@ -91,7 +91,7 @@ def profile(request):
     return render(request, 'profile.html', {'form': form})
 
 def general_forum_view(request):
-    forum = get_object_or_404(Forum, name="General forum")
+    forum = get_object_or_404(Forum, name="Forum Général")
     themes = forum.themes.all().order_by('order')
     return render(request, 'general_forum.html', {'forum': forum, 'themes': themes})
 

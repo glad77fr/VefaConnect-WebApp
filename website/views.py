@@ -12,6 +12,8 @@ from django.views.generic import TemplateView
 from django.urls import reverse_lazy
 from .models import RealEstateProgram
 from .forms import RealEstateProgramForm
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views import generic
 
 
 
@@ -109,3 +111,11 @@ def my_programs(request):
     user_profile = UserProfile.objects.get(user=request.user)
     followed_programs = FollowedProgram.objects.filter(user_profile=user_profile)
     return render(request, 'my_programs.html', {'followed_programs': followed_programs})
+
+class ProgrammesSuivisView(LoginRequiredMixin, generic.ListView):
+    model = RealEstateProgram
+    template_name = "programmes_suivis.html"
+    
+    def get_queryset(self):
+        user_profile = self.request.user.userprofile  # Obtention de l'objet UserProfile associé à cet utilisateur
+        return user_profile.followed_programs.all()

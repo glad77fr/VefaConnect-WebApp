@@ -93,7 +93,6 @@ class UnvalidatedRealEstateProgram(RealEstateProgram):
         verbose_name_plural = 'Unvalidated Programs'
 
 
-
 class FollowedProgram(models.Model):
     user_profile = models.ForeignKey('forum.UserProfile', on_delete=models.CASCADE)
     real_estate_program = models.ForeignKey(RealEstateProgram, on_delete=models.CASCADE)

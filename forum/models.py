@@ -3,6 +3,7 @@ from django.utils.text import slugify
 from django.contrib.auth.models import User
 from website.models import RealEstateProgram
 from django.db.models import Max
+import itertools
 
 # Create your models here.
 class UserProfile(models.Model):
