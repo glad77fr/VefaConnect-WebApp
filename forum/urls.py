@@ -20,7 +20,5 @@ urlpatterns = [
     path('post/<int:pk>/', views.PostDetailView.as_view(), name='post_detail'),
     path('post/<int:post_id>/reply/', reply_to_post, name='reply_to_post'),
     path('access-denied/', access_denied, name='access_denied'),
-
-
     
 ]
