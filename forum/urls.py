@@ -15,10 +15,13 @@ urlpatterns = [
     path('contact/', contact_view, name='contact'),
     path('profile/', views.profile, name='profile'),
     path('general_forum/', general_forum_view, name='general_forum'),
-    path('topic/<slug:topic_slug>/', ForumThemeView.as_view(), name='forum_theme_detail'),
-    path('create_post/', CreatePostView.as_view(), name='create_post'),
+    path('topic/<slug:topic_slug>/', ForumThemeView.as_view(), name='general_forum_theme_detail'),
+    path('program_forum/<slug:program_slug>/topic/<slug:topic_slug>/', ForumThemeView.as_view(), name='forum_theme_detail'),
     path('post/<int:pk>/', views.PostDetailView.as_view(), name='post_detail'),
     path('post/<int:post_id>/reply/', reply_to_post, name='reply_to_post'),
     path('access-denied/', access_denied, name='access_denied'),
+    path('program_forum/<slug:program_slug>/', views.ProgramForumView.as_view(), name='program_forum'),
+    path('general_forum/<slug:topic_slug>/create_post/', CreatePostView.as_view(), name='create_post_general'),
+    path('program_forum/<slug:program_slug>/<slug:topic_slug>/create_post/',CreatePostView.as_view(), name='create_post_with_program'),
     
 ]

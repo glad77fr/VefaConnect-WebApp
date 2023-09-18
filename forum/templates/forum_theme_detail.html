@@ -18,10 +18,14 @@
 <div class="container my-5">
     <div class="d-flex justify-content-between align-items-center">
         <h1>{{ topic.title }}</h1>
-        <a href="{% url 'create_post' %}" class="btn btn-primary">Nouveau sujet</a>
+        {% if program_exists %}
+        <a href="{% url 'create_post_with_program' program.slug topic.slug  %}" class="btn btn-primary">Nouveau sujet</a>
+{% else %}
+        <a href="{% url 'create_post_general' topic.slug %}" class="btn btn-primary">Nouveau sujet</a>
+        {% endif %}
     </div>
     <hr class="elegant-line">
-    <ul class="pagination">
+      <ul class="pagination">
         {% if posts.has_previous %}
             <li class="page-item">
                 <a class="page-link" href="?page=1" aria-label="First">

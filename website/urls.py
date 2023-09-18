@@ -23,5 +23,5 @@ urlpatterns = [
     path('logout/', LogoutAndStay.as_view(), name='logout'),
     path('my_programs/', my_programs, name='my_programs'),
     path('create_program/', create_program, name='create_program'),
-    path('programmes-suivis/', views.ProgrammesSuivisView.as_view(), name='programmes_suivis')
+    path('programmes-suivis/', views.ProgrammesSuivisView.as_view(), name='programmes_suivis'),
 ]

@@ -5,16 +5,38 @@
 
 {% block content %}
 <div class="container my-5">
-    <h1>Mes programmes suivis</h1>
-    <hr>
+    <h1 class="mb-4">Mes programmes suivis</h1>
     {% if object_list %}
-        <ul class="list-group">
+        <div class="row">
             {% for programme in object_list %}
-                <li class="list-group-item">
-                    {{ programme.name }}  <!-- Supposant que votre modèle Programme a un champ nom -->
-                </li>
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        {% if programme.image %}
+                            <img src="{{ programme.image.url }}" alt="{{ programme.name }}" class="card-img-top">
+                        {% else %}
+                            <img src="{% static 'img/default_program_image.jpg' %}" alt="Image par défaut" class="card-img-top">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ programme.name|capfirst }}</h5>
+                            <p class="card-text">{{ programme.description|truncatechars:150 }}</p>
+                            <p><strong>Développeur :</strong> {{ programme.developer.name }}</p> <!-- Supposant que votre modèle RealEstateDeveloper a un champ nom -->
+                            <p><strong>Adresse :</strong> {{ programme.address.street }} {{ programme.address.zip_code }} {{ programme.address.city }}</p> <!-- Supposant que votre modèle Address a des champs street, zip_code, et city -->
+                            {% if programme.end_date %}
+                                <p><strong>Date de fin :</strong> {{ programme.end_date }}</p>
+                            {% endif %}
+                            {% if programme.new_end_date %}
+                                <p><strong>Nouvelle date de fin :</strong> {{ programme.new_end_date }}</p>
+                            {% endif %}
+                            {% if not programme.validated %}
+                                <p class="text-warning">En attente de validation</p>
+                            {% endif %}
+
+                            <a href="{% url 'program_forum' program_slug=programme.slug %}" class="btn btn-primary">Forum</a> <!-- Crée un bouton qui mène vers le forum du programme -->
+                        </div>
+                    </div>
+                </div>
             {% endfor %}
-        </ul>
+        </div>
     {% else %}
         <p class="alert alert-warning">Vous ne suivez actuellement aucun programme.</p>
     {% endif %}

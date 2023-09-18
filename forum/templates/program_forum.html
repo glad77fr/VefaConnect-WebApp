@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Forum Général{% endblock %}
+{% block title %}Forum {{real_estate_program.name}}{% endblock %}
 
 {% block content %}
 <head>
@@ -51,7 +51,8 @@
                     <!-- Thème & Description Cell -->
                     <td>
                         <!-- Lien vers le thème -->
-                        <div><a href="{% url 'general_forum_theme_detail' topic_slug=theme.slug %}">{{ theme.title }}</a></div>
+                        <div><a href="{% url 'forum_theme_detail' program_slug=real_estate_program.slug topic_slug=theme.slug %}">{{ theme.title }}</a></div>
+
                         <!-- Description en dessous du thème -->
                         <div>{{ theme.description }}</div>
                     </td>

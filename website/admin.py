@@ -8,8 +8,8 @@ class RealEstateDeveloperAdmin(admin.ModelAdmin):
 
 @admin.register(RealEstateProgram)
 class RealEstateProgramAdmin(admin.ModelAdmin):
-    list_display = ['name', 'developer', 'end_date', 'validated']
-    list_filter = ['validated']
+    list_display = ['name', 'developer', 'end_date', 'validated','slug']
+    list_filter = ['validated','developer','slug']
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)

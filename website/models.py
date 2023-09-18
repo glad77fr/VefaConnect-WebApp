@@ -72,19 +72,37 @@ class RealEstateProgram(models.Model):
             return self.name
     
     def save(self, *args, **kwargs):
-        self.name = self.name.strip().lower()  # Normalize the name by converting to lowercase and trimming whitespace
-        if not self.slug:
-            self.slug = slugify(f'{self.name}-{self.pk}')
+            self.name = self.name.strip().lower()  # Normalize the name by converting to lowercase and trimming whitespace
 
-                # Set default image if not present
-        if not self.image:
-            default_image_path = os.path.join(settings.BASE_DIR, 'media', 'program_images/Default_program.jpg')
-            self.image.save(
-                os.path.basename(default_image_path),
-                File(open(default_image_path, 'rb'))
-            )
+            # First, save the model so it has a pk if it's a new record
+            super().save(*args, **kwargs)
 
-        super().save(*args, **kwargs)
+            # Then, update the slug using the name and pk
+            if not self.slug:
+                generated_slug = slugify(f'{self.name}-{self.pk}')
+                self.slug = generated_slug
+
+                # Check for slug uniqueness
+                unique_slug = generated_slug
+                num = 1
+
+                while RealEstateProgram.objects.filter(slug=unique_slug).exclude(pk=self.pk).exists():
+                    unique_slug = f'{generated_slug}-{num}'
+                    num += 1
+
+                self.slug = unique_slug
+
+            # Set default image if not present
+            if not self.image:
+                default_image_path = os.path.join(settings.BASE_DIR, 'media', 'program_images/Default_program.jpg')
+                self.image.save(
+                    os.path.basename(default_image_path),
+                    File(open(default_image_path, 'rb'))
+                )
+
+            # Save the model again to record any changes we've made
+            super().save(*args, **kwargs)
+
 
 class UnvalidatedRealEstateProgram(RealEstateProgram):
     class Meta:

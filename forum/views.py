@@ -17,6 +17,7 @@ from .forms import ReplyModelForm
 from django.core.paginator import Paginator
 from django.utils.decorators import method_decorator
 from django.http import HttpResponse
+from website.models import RealEstateProgram
 
 def login_view(request):
     if request.method == "POST":
@@ -97,7 +98,12 @@ def general_forum_view(request):
 
 
 class ForumThemeView(View):
-    def get(self, request, topic_slug):
+    def get(self, request, topic_slug, program_slug=None):
+        program = None
+        if program_slug:
+            program = RealEstateProgram.objects.get(slug=program_slug) 
+        
+        program_exists = bool(program)
         topic = ForumTheme.objects.get(slug=topic_slug)
         posts_all = topic.posts.all().order_by('-date_posted')
 
@@ -107,23 +113,34 @@ class ForumThemeView(View):
         posts = paginator.get_page(page)
 
         context = {
+            'program': program,
             'topic': topic,
-            'posts': posts
+            'posts': posts,
+            'program_exists' :program_exists,
         }
         return render(request, 'forum_theme_detail.html', context)
 
-@method_decorator(login_required(login_url='access_denied'), name='dispatch')    
+
+@method_decorator(login_required(login_url='access_denied'), name='dispatch')
 class CreatePostView(View):
-    def get(self, request, *args, **kwargs):
-        form = CreatePostForm()
+    def get(self, request, program_slug=None, *args, **kwargs):
+        # Initialize the form with the real_estate_program field if program_pk is provided
+        initial_data = {}
+        if program_slug:
+            program = get_object_or_404(RealEstateProgram, slug=program_slug)
+            initial_data['real_estate_program'] = program
+
+        form = CreatePostForm(initial=initial_data)
         return render(request, 'create_post.html', {'form': form})
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request, program_pk=None, *args, **kwargs):
         form = CreatePostForm(request.POST)
         if form.is_valid():
             new_post = form.save(commit=False)
             new_post.user = request.user.userprofile  # Attaching the UserProfile to the post, not the User
-            new_post.theme = ForumTheme.objects.get(id=1)  # Replace with the appropriate logic to get the Theme
+            new_post.theme = ForumTheme.objects.get(id=2)  # Replace with the appropriate logic to get the Theme
+            if program_pk:  # Assign the program if its pk is provided
+                new_post.real_estate_program = get_object_or_404(RealEstateProgram, pk=program_pk)
             new_post.save()
             return redirect('post_detail', pk=new_post.id)
         return render(request, 'create_post.html', {'form': form})
@@ -185,6 +202,24 @@ def load_more_replies(request, post_id, page):
 def access_denied(request):
     return render(request, 'access_denied.html')
 
+class ProgramForumView(View):
+    def get(self, request, program_slug):
+        program =  program = get_object_or_404(RealEstateProgram, slug=program_slug)
 
+        # Récupération du forum ayant pour nom "Forum programmes"
+        forum_programmes = Forum.objects.get(name="Forum programmes")
 
+        # Récupération des thèmes du forum spécifié
+        themes = ForumTheme.objects.filter(forum=forum_programmes).order_by('order')
+
+        # Calcul du nombre de posts et de réponses pour chaque thème, spécifiques à ce programme immobilier
+        for theme in themes:
+            theme.post_count_program = ForumPost.objects.filter(theme=theme, real_estate_program=program).count()
+            theme.reply_count_program = Reply.objects.filter(post__theme=theme, post__real_estate_program=program).count()
+
+        context = {
+            'real_estate_program': program,
+            'themes': themes
+        }
+        return render(request, 'program_forum.html', context)
 
