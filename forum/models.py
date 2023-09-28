@@ -4,6 +4,8 @@ from django.contrib.auth.models import User
 from website.models import RealEstateProgram
 from django.db.models import Max
 import itertools
+from django.dispatch import receiver
+from django.db.models.signals import pre_save
 
 # Create your models here.
 class UserProfile(models.Model):
@@ -93,16 +95,28 @@ class ForumPost(models.Model):
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     theme = models.ForeignKey(ForumTheme, on_delete=models.CASCADE, related_name='posts')
     title = models.CharField(max_length=200)
+    slug = models.SlugField(unique=True, blank=True,null=True)
     real_estate_program = models.ForeignKey(RealEstateProgram, on_delete=models.CASCADE, blank=True, null=True)
     content = models.TextField()
     date_posted = models.DateTimeField(auto_now_add=True)
 
+
     def last_reply(self):
         last_reply = self.replies.aggregate(Max('date_posted'))['date_posted__max']
         
-        if last_reply :
+        if last_reply:
             return last_reply
 
+@receiver(pre_save, sender=ForumPost)
+def create_slug_for_post(sender, instance, *args, **kwargs):
+    if not instance.slug:
+        slug = slugify(instance.title)
+        unique_slug = slug
+        num = 1
+        while ForumPost.objects.filter(slug=unique_slug).exists():
+            unique_slug = '{}-{}'.format(slug, num)
+            num += 1
+        instance.slug = unique_slug
 
 class Reply(models.Model):
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
