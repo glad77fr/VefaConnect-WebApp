@@ -94,7 +94,14 @@
             <div class="card-body">
  
                 <!-- We make the title a clickable link that directs to the post detail page -->
-                <a href="{% url 'post_detail' pk=post.id %}"><h5 class="card-title">{{ post.title }}</h5></a>
+                <div class="card-body">
+                    <!-- We make the title a clickable link that directs to the post detail page -->
+                    {% if post.real_estate_program and post.real_estate_program.slug %}
+                        <a href="{% url 'program_post_detail' program_slug=post.real_estate_program.slug topic_slug=topic.slug  post_slug=post.slug%}"><h5 class="card-title">{{ post.title }}</h5></a>
+                        {% else %}
+                        <a href="{% url 'general_post_detail' topic_slug=topic.slug post_slug=post.slug %}"><h5 class="card-title">{{ post.title }}</h5></a>
+                    {% endif %}
+                </div>
             </div>
             <div class="card-footer text-muted">
                 {% if post.last_reply %}

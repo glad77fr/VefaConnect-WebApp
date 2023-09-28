@@ -23,7 +23,7 @@ class ForumThemeAdmin(admin.ModelAdmin):
 # Configuration de l'administration pour le modèle ForumPost
 @admin.register(ForumPost)
 class ForumPostAdmin(admin.ModelAdmin):
-    list_display = ('user', 'theme', 'real_estate_program', 'date_posted')
+    list_display = ('user', 'theme','title', 'real_estate_program', 'date_posted')
     list_filter = ('theme__forum', 'real_estate_program')
     search_fields = ('user__username', 'theme__title', 'content')
 

@@ -19,6 +19,7 @@ from django.utils.decorators import method_decorator
 from django.http import HttpResponse
 from website.models import RealEstateProgram
 
+
 def login_view(request):
     if request.method == "POST":
         username = request.POST["username"]
@@ -123,29 +124,39 @@ class ForumThemeView(View):
 
 @method_decorator(login_required(login_url='access_denied'), name='dispatch')
 class CreatePostView(View):
-    def get(self, request, program_slug=None, *args, **kwargs):
+    def get(self, request, topic_slug ,program_slug=None, *args, **kwargs):
+        
         # Initialize the form with the real_estate_program field if program_pk is provided
         initial_data = {}
         if program_slug:
             program = get_object_or_404(RealEstateProgram, slug=program_slug)
             initial_data['real_estate_program'] = program
+        initial_data['theme'] = get_object_or_404(ForumTheme, slug=topic_slug)
+   
 
         form = CreatePostForm(initial=initial_data)
         return render(request, 'create_post.html', {'form': form})
 
-    def post(self, request, program_pk=None, *args, **kwargs):
+    def post(self, request, topic_slug, program_slug=None, *args, **kwargs):
         form = CreatePostForm(request.POST)
         if form.is_valid():
+            print("Form is valid")  # Message de débogage
             new_post = form.save(commit=False)
             new_post.user = request.user.userprofile  # Attaching the UserProfile to the post, not the User
-            new_post.theme = ForumTheme.objects.get(id=2)  # Replace with the appropriate logic to get the Theme
-            if program_pk:  # Assign the program if its pk is provided
-                new_post.real_estate_program = get_object_or_404(RealEstateProgram, pk=program_pk)
+            new_post.theme = ForumTheme.objects.get(slug=topic_slug)  # Replace with the appropriate logic to get the Theme
+            if program_slug:  # Assign the program if its pk is provided
+                new_post.real_estate_program = get_object_or_404(RealEstateProgram, slug=program_slug)
             new_post.save()
-            return redirect('post_detail', pk=new_post.id)
+             # Redirecting based on the presence of program_slug
+            if program_slug:
+                return redirect('program_post_detail', program_slug=program_slug, topic_slug=topic_slug, post_slug=new_post.slug)
+            else:
+                return redirect('general_post_detail', topic_slug=topic_slug, post_slug=new_post.slug)
+        else:
+            print("Form is NOT valid", form.errors)  # Message de débogage
         return render(request, 'create_post.html', {'form': form})
 
-class PostDetailView(DetailView):
+""" class PostDetailView(DetailView):
     model = ForumPost
     template_name = 'post_detail.html'
     context_object_name = 'post'
@@ -160,7 +171,30 @@ class PostDetailView(DetailView):
         context['replies'] = paginator.get_page(page)
         # Ajouter une instance du formulaire au contexte
         context['reply_form'] = ReplyModelForm()
-        return context
+        return context """
+
+class PostDetailView(DetailView):
+    model = ForumPost
+    template_name = 'post_detail.html'
+    context_object_name = 'post'
+    slug_field = 'slug'         
+    slug_url_kwarg = 'post_slug' 
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        topic_slug = self.kwargs['topic_slug']
+        post_slug = self.kwargs['post_slug']
+        program_slug = self.kwargs.get('program_slug')
+
+
+        replies = Reply.objects.filter(post=self.object).order_by('date_posted')
+        paginator = Paginator(replies, 10)
+        
+        page = self.request.GET.get('page')
+        context['replies'] = paginator.get_page(page)
+        # Ajouter une instance du formulaire au contexte
+        context['reply_form'] = ReplyModelForm()
+        return context 
 
 
 def reply_to_post(request, post_id):

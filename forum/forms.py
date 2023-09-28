@@ -131,7 +131,7 @@ class CreatePostForm(forms.ModelForm):
     )
     class Meta:
         model = ForumPost
-        fields = ['title', 'content', 'real_estate_program','theme']
+        fields = ['title', 'content']
 
 class ReplyModelForm(forms.ModelForm):
     content = forms.CharField(
