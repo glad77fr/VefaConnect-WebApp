@@ -2,7 +2,8 @@ from django.db import models
 from django.utils.text import slugify
 import os
 from django.conf import settings
-from django.core.files import File  
+from django.core.files import File
+from ckeditor_uploader.fields import RichTextUploadingField
 
 
 # Create your models here.
@@ -117,3 +118,72 @@ class FollowedProgram(models.Model):
     date_followed = models.DateTimeField(auto_now_add=True)
     is_owner = models.BooleanField(default=False)
     apartment_lot_reference = models.CharField(max_length=200, blank=True, null=True)
+
+class Category(models.Model):
+    name = models.CharField(max_length=255, unique=True)
+    slug = models.SlugField(unique=True, blank=True, null=True)
+    description = models.TextField(blank=True, null=True)  # Optionnel
+
+    def save(self, *args, **kwargs):
+        # Si le slug n'est pas défini
+        if not self.slug:
+            # Utilisez slugify pour créer un slug à partir du nom
+            # Pour éviter des doublons, ajoutez un compteur si nécessaire
+            potential_slug = slugify(self.name)
+            counter = 1
+            while Category.objects.filter(slug=potential_slug).exists():
+                potential_slug = "{}-{}".format(slugify(self.name), counter)
+                counter += 1
+            self.slug = potential_slug
+        super(Category, self).save(*args, **kwargs) 
+
+    def __str__(self):
+        return self.name
+
+class Article(models.Model):
+    title = models.CharField(max_length=200)
+    publication_date = models.DateField()
+    author = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+    meta_description = models.CharField(max_length=160, blank=True, null=True)
+    meta_keywords = models.CharField(max_length=255, blank=True, null=True)
+    slug = models.SlugField(unique=True, blank=True, null=True)
+    associated_articles = models.ManyToManyField('self', blank=True)
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
+
+    def __str__(self):
+            return self.title
+
+    def save(self, *args, **kwargs):
+        # Si le slug n'est pas défini
+        if not self.slug:
+            # Utilisez slugify pour créer un slug à partir du titre
+            # Pour éviter des doublons, ajoutez un compteur si nécessaire
+            potential_slug = slugify(self.title)
+            counter = 1
+            while Article.objects.filter(slug=potential_slug).exists():
+                potential_slug = "{}-{}".format(slugify(self.title), counter)
+                counter += 1
+            self.slug = potential_slug
+        super(Article, self).save(*args, **kwargs)
+
+class Section(models.Model):
+    ARTICLE_SECTION_CHOICES = (
+        ('text', 'Texte'),
+        ('image', 'Image'),
+        # Ajoutez d'autres types selon vos besoins
+    )
+    IMAGE_POSITION_CHOICES = (
+        ('title', 'Image de titre'),
+        ('left', 'Image à gauche'),
+        ('right', 'Image à droite'),
+    )
+    type = models.CharField(max_length=50, choices=ARTICLE_SECTION_CHOICES)
+    image_position = models.CharField(max_length=50, choices=IMAGE_POSITION_CHOICES, blank=True, null=True, default='left') # Nouveau champ
+    order = models.PositiveIntegerField(default=0) # Nouveau champ
+    article = models.ForeignKey(Article, on_delete=models.CASCADE)
+    content = RichTextUploadingField(blank=True, null=True)
+    image = models.ImageField(upload_to='articles/sections/', blank=True, null=True)
+    caption = models.TextField(blank=True)        # Légende pour l'image
+    alt_text = models.CharField(max_length=255, blank=True)   # Texte alternatif pour l'image
+    
+

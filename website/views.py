@@ -14,6 +14,8 @@ from .models import RealEstateProgram
 from .forms import RealEstateProgramForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import generic
+from .models import Article, Section,Category
+from django.shortcuts import render, get_object_or_404
 
 
 
@@ -119,3 +121,27 @@ class ProgrammesSuivisView(LoginRequiredMixin, generic.ListView):
     def get_queryset(self):
         user_profile = self.request.user.userprofile  # Obtention de l'objet UserProfile associé à cet utilisateur
         return user_profile.followed_programs.all()
+    
+class ArticleDetailView(DetailView):
+    model = Article
+    template_name = 'article_detail.html'
+    context_object_name = 'article'
+    slug_field = 'slug'
+    slug_url_kwarg = 'slug'
+    
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['sections'] = Section.objects.filter(article=self.object)
+        return context
+
+def category_articles(request, category_slug):
+    category = get_object_or_404(Category, slug=category_slug)
+    articles = Article.objects.filter(category=category)
+    
+    return render(request, 'category_articles.html', {
+        'category': category,
+        'articles': articles,
+    })
+
+

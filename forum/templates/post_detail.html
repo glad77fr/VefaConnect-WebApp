@@ -25,71 +25,72 @@
      <!-- Reply Button and Elegant Horizontal Line -->
    
 
-    <div class="mb-4 d-flex align-items-center">
+    <div class="d-flex justify-content-between mb-2">
         <input type="hidden" id="currentPage" value="{{ replies.number }}">
         <input type="hidden" id="totalPages" value="{{ replies.paginator.num_pages }}">
 
+        <h5 class="card-title mb-0">{{ post.title }}</h5>
 
-        <ul class="pagination">
-            {% if replies.has_previous %}
-                <li class="page-item">
-                    <a class="page-link" href="?page=1" aria-label="First">
-                        <span aria-hidden="true">&laquo;&laquo;</span>
-                    </a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ replies.previous_page_number }}" aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
-                    </a>
-                </li>
-            {% else %}
-                <li class="page-item disabled">
-                    <a class="page-link" href="#" aria-label="First">
-                        <span aria-hidden="true">&laquo;&laquo;</span>
-                    </a>
-                </li>
-                <li class="page-item disabled">
-                    <a class="page-link" href="#" aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
-                    </a>
-                </li>
-            {% endif %}
-    
-            <!-- Indicateur de page actuelle -->
-            <li class="page-item disabled">
-                <a class="page-link" href="#">Page {{ replies.number }} de {{ replies.paginator.num_pages }}</a>
-            </li>
-    
-            {% if replies.has_next %}
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ replies.next_page_number }}" aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ replies.paginator.num_pages }}" aria-label="Last">
-                        <span aria-hidden="true">&raquo;&raquo;</span>
-                    </a>
-                </li>
-            {% else %}
-                <li class="page-item disabled">
-                    <a class="page-link" href="#" aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
-                </li>
-                <li class="page-item disabled">
-                    <a class="page-link" href="#" aria-label="Last">
-                        <span aria-hidden="true">&raquo;&raquo;</span>
-                    </a>
-                </li>
-            {% endif %}
-        </ul>
           <div class="reply-btn-container">
         <button id="showReplyForm" class="btn btn-primary">Répondre</button>
         </div>
     </div>
     
     <hr class="elegant-hr">
+    <ul class="pagination">
+        {% if replies.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page=1" aria-label="First">
+                    <span aria-hidden="true">&laquo;&laquo;</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ replies.previous_page_number }}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+        {% else %}
+            <li class="page-item disabled">
+                <a class="page-link" href="#" aria-label="First">
+                    <span aria-hidden="true">&laquo;&laquo;</span>
+                </a>
+            </li>
+            <li class="page-item disabled">
+                <a class="page-link" href="#" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+        {% endif %}
+
+        <!-- Indicateur de page actuelle -->
+        <li class="page-item disabled">
+            <a class="page-link" href="#">Page {{ replies.number }} de {{ replies.paginator.num_pages }}</a>
+        </li>
+
+        {% if replies.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ replies.next_page_number }}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ replies.paginator.num_pages }}" aria-label="Last">
+                    <span aria-hidden="true">&raquo;&raquo;</span>
+                </a>
+            </li>   
+        {% else %}
+            <li class="page-item disabled">
+                <a class="page-link" href="#" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+            <li class="page-item disabled">
+                <a class="page-link" href="#" aria-label="Last">
+                    <span aria-hidden="true">&raquo;&raquo;</span>
+                </a>
+            </li>
+        {% endif %}
+    </ul>
 
     <div class="card mb-4">
         <div class="card-header d-flex justify-content-between">
@@ -104,6 +105,9 @@
         <div class="card-body">
             <h5 class="card-title">{{ post.title }}</h5>
             <p class="card-text">{{ post.content|safe }}</p>
+            <a href="{% url 'upvote_post' post.id %}" id="upvote-btn-{{ post.id }}" onclick="handleUpvote({{ post.id }}); return false;">
+                Upvote ({{ post.upvotes_count }})
+            </a>
         </div>
     </div>
 
@@ -200,6 +204,32 @@
             
         });
     });
+
+    function handleUpvote(postId) {
+    var upvoteUrl = $('#upvote-btn-' + postId).attr('href');
+    
+    $.ajax({
+        url: upvoteUrl,
+        type: 'POST',
+        data: {
+            'post_id': postId,
+        },
+        headers: {
+            "X-CSRFToken": '{{ csrf_token }}'
+        },
+        success: function(response) {
+            if (response.success) {
+                $('#upvote-btn-' + postId).text('Upvote (' + response.new_upvotes_count + ')');
+            } else {
+                alert('Une erreur est survenue lors de l\'upvote.');
+            }
+        },
+        error: function() {
+            alert('Erreur lors de la requête AJAX.');
+        }
+    });
+}
+
 </script>
 
 {% endblock %}

@@ -59,18 +59,18 @@
 
                     <!-- Post Count Cell -->
                     <td>
-                        {{ theme.post_count|default:"0" }}
+                        {{ theme.post_count_program|default:"0" }}
                     </td>
 
                     <!-- Reply Count Cell -->
                     <td>
-                        {{ theme.reply_count|default:"0" }}
+                        {{ theme.reply_count_program|default:"0" }}
                     </td>
 
                     <!-- Last Activity Cell -->
                     <td>
-                        {% if theme.get_last_activity_date %}
-                            Dernière activité: {{ theme.get_last_activity_date|date:"d/m/Y H:i" }}
+                        {% if theme.last_activity_date %}
+                            Dernière activité: {{ theme.last_activity_date |date:"d/m/Y H:i" }}
                         {% endif %}
                     </td>
                 </tr>

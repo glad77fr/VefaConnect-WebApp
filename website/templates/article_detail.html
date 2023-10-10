@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <meta name="description" content="{{ article.meta_description }}">
+    <meta name="keywords" content="{{ article.meta_keywords }}">
+{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <!-- Article Title -->
+            <h1 class="display-4">{{ article.title }}</h1>
+             <!-- Author and Date -->
+             <p class="text-muted">
+                Écrit par {{ article.author }} le {{ article.publication_date|date:"F j, Y" }}
+            </p>
+            <hr>
+            
+            <!-- Image with position "title" under the Article Title -->
+            {% for section in sections %}
+                {% if section.type == 'image' and section.image_position == 'title' %}
+                    <img src="{{ section.image.url }}" alt="{{ section.content }}" class="img-fluid mb-4">
+                {% endif %}
+            {% endfor %}
+            
+           
+       
+
+            <!-- Article Sections -->
+            <div class="article-content">
+                {% for section in sections %}
+                    {% if section.type == 'text' %}
+                        {{ section.content|safe }}
+                    {% elif section.type == 'image' %}
+                        {% if section.image_position == 'left' %}
+                            <img src="{{ section.image.url }}" alt="{{ section.content }}" class="img-fluid float-left mr-4 mb-4">
+                        {% elif section.image_position == 'right' %}
+                            <img src="{{ section.image.url }}" alt="{{ section.content }}" class="img-fluid float-right ml-4 mb-4">
+                        {% elif section.image_position == 'title' %}
+
+                        {% else %}
+                            <img src="{{ section.image.url }}" alt="{{ section.content }}" class="img-fluid mb-4">
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -24,4 +24,5 @@ urlpatterns = [
     path('post/<int:post_id>/reply/', reply_to_post, name='reply_to_post'),
     path('access-denied/', access_denied, name='access_denied'),
     path('program_forum/<slug:program_slug>/', views.ProgramForumView.as_view(), name='program_forum'),
+    path('upvote_reply/<int:reply_id>/', views.upvote_reply, name='upvote_reply'),
 ]

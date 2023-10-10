@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate, login
 from .models import UserProfile
 from .forms import UserRegisterForm, UserProfileForm
 from django.core.mail import send_mail
-from django.contrib import messages 
+from django.contrib import messages     
 from django.contrib.auth.decorators import login_required
 from .models import Forum, ForumTheme, ForumPost, Reply
 from django.shortcuts import render, get_object_or_404
@@ -18,6 +18,7 @@ from django.core.paginator import Paginator
 from django.utils.decorators import method_decorator
 from django.http import HttpResponse
 from website.models import RealEstateProgram
+from django.http import JsonResponse
 
 
 def login_view(request):
@@ -106,7 +107,15 @@ class ForumThemeView(View):
         
         program_exists = bool(program)
         topic = ForumTheme.objects.get(slug=topic_slug)
-        posts_all = topic.posts.all().order_by('-date_posted')
+        
+        # Récupérer tous les posts du thème
+        posts_all = topic.posts.all()
+        
+        # Si un programme est spécifié, filtrez les posts en fonction de ce programme
+        if program:
+            posts_all = posts_all.filter(real_estate_program=program)
+        
+        posts_all = posts_all.order_by('-date_posted')
 
         # Pagination
         paginator = Paginator(posts_all, 10)  # Show 10 posts per page
@@ -117,7 +126,7 @@ class ForumThemeView(View):
             'program': program,
             'topic': topic,
             'posts': posts,
-            'program_exists' :program_exists,
+            'program_exists': program_exists,
         }
         return render(request, 'forum_theme_detail.html', context)
 
@@ -155,23 +164,6 @@ class CreatePostView(View):
         else:
             print("Form is NOT valid", form.errors)  # Message de débogage
         return render(request, 'create_post.html', {'form': form})
-
-""" class PostDetailView(DetailView):
-    model = ForumPost
-    template_name = 'post_detail.html'
-    context_object_name = 'post'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        
-        replies = Reply.objects.filter(post=self.object).order_by('date_posted')
-        paginator = Paginator(replies, 10)
-        
-        page = self.request.GET.get('page')
-        context['replies'] = paginator.get_page(page)
-        # Ajouter une instance du formulaire au contexte
-        context['reply_form'] = ReplyModelForm()
-        return context """
 
 class PostDetailView(DetailView):
     model = ForumPost
@@ -251,9 +243,38 @@ class ProgramForumView(View):
             theme.post_count_program = ForumPost.objects.filter(theme=theme, real_estate_program=program).count()
             theme.reply_count_program = Reply.objects.filter(post__theme=theme, post__real_estate_program=program).count()
 
+            # Trouver la date du post le plus récent pour ce thème
+            latest_post_date = ForumPost.objects.filter(theme=theme, real_estate_program=program).order_by('-date_posted').values_list('date_posted', flat=True).first()
+
+            # Trouver la date de la réponse la plus récente pour ce thème
+            latest_reply_date = Reply.objects.filter(post__theme=theme, post__real_estate_program=program).order_by('-date_posted').values_list('date_posted', flat=True).first()
+
+            # Retenir la date la plus récente comme la "dernière activité" du thème
+            theme.last_activity_date = max(filter(None, [latest_post_date, latest_reply_date]), default=None)
+
+
         context = {
             'real_estate_program': program,
             'themes': themes
         }
         return render(request, 'program_forum.html', context)
 
+@login_required
+def upvote_reply(request, reply_id):
+    reply = get_object_or_404(Reply, id=reply_id)
+    user = request.user
+    
+    # Vérifier si l'utilisateur a déjà voté
+    if user in reply.upvoted_users.all():
+        # Si c'est le cas, retirez le vote
+        reply.upvoted_users.remove(user)
+        upvoted = False
+    else:
+        # Sinon, ajoutez le vote
+        reply.upvoted_users.add(user)
+        upvoted = True
+
+    return JsonResponse({
+        'upvoted': upvoted,
+        'count': reply.upvotes_count  # Assurez-vous d'avoir une propriété ou une méthode 'upvotes_count' sur le modèle 'ForumReply'
+    })

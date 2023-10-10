@@ -1,5 +1,6 @@
 from django.contrib import admin
 from .models import RealEstateDeveloper, RealEstateProgram,UnvalidatedRealEstateProgram, FollowedProgram, Country, City, Address
+from .models import Article, Section, Category
 
 @admin.register(RealEstateDeveloper)
 class RealEstateDeveloperAdmin(admin.ModelAdmin):
@@ -50,3 +51,23 @@ class AddressAdmin(admin.ModelAdmin):
         if db_field.name == 'city':
             kwargs["queryset"] = City.objects.order_by('name')
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
+@admin.register(Article)
+class ArticleAdmin(admin.ModelAdmin):
+    list_display = ('title', 'publication_date', 'author',)
+    search_fields = ('title', 'author__username',)
+    list_filter = ('publication_date', 'author',)
+    prepopulated_fields = {'slug': ('title',)}
+    filter_horizontal = ('associated_articles',)
+
+@admin.register(Section)
+class SectionAdmin(admin.ModelAdmin):
+    list_display = ('type', 'article',)
+    list_filter = ('type',)
+    search_fields = ('article__title',)
+
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ('name', 'slug', 'description',)
+    list_filter = ('name',)
+    search_fields = ('name',)
