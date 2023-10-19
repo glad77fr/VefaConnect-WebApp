@@ -105,9 +105,7 @@
         <div class="card-body">
             <h5 class="card-title">{{ post.title }}</h5>
             <p class="card-text">{{ post.content|safe }}</p>
-            <a href="{% url 'upvote_post' post.id %}" id="upvote-btn-{{ post.id }}" onclick="handleUpvote({{ post.id }}); return false;">
-                Upvote ({{ post.upvotes_count }})
-            </a>
+            
         </div>
     </div>
 
@@ -126,7 +124,17 @@
                 </div>
                 <div class="card-body">
                     <p class="card-text">{{ reply.content|safe }}</p>
-                </div>
+                    <div class="upvote-wrapper">
+                        <a href="{% url 'upvote_reply' reply.id %}" 
+                           class="upvote-btn {% if reply.id in user_upvoted_replies %}active-vote{% endif %}" 
+                           id="upvote-btn-{{ reply.id }}" 
+                           onclick="handleUpvote({{ reply.id }});">
+                            <i class="fas fa-thumbs-up"></i> 
+                            <span class="vote-count">{{ reply.upvote_count }}</span>
+                        </a>
+                    </div>
+                    
+                </div>                
             </div>
         {% endfor %}
     </div>
@@ -199,36 +207,57 @@
                             scrollTop: $lastReply.offset().top
                         }, 1000);
                     }
+                    
                 }
+                
             },
             
         });
     });
 
-    function handleUpvote(postId) {
-    var upvoteUrl = $('#upvote-btn-' + postId).attr('href');
+    function handleUpvote(replyId) {
+    event.preventDefault();
+    
+    var upvoteUrl = $('#upvote-btn-' + replyId).attr('href');
     
     $.ajax({
         url: upvoteUrl,
         type: 'POST',
         data: {
-            'post_id': postId,
+            'reply_id': replyId,
         },
         headers: {
             "X-CSRFToken": '{{ csrf_token }}'
         },
         success: function(response) {
+            console.log(response);
             if (response.success) {
-                $('#upvote-btn-' + postId).text('Upvote (' + response.new_upvotes_count + ')');
-            } else {
-                alert('Une erreur est survenue lors de l\'upvote.');
-            }
-        },
-        error: function() {
-            alert('Erreur lors de la requête AJAX.');
+        // Mettre à jour le texte à côté de l'icône avec le nouveau nombre de votes
+        $('#upvote-btn-' + replyId + ' .vote-count').text(response.count);
+
+        // Mettre en surbrillance le bouton si l'utilisateur a voté
+        if (response.upvoted) {
+            $('#upvote-btn-' + replyId).addClass('active-vote');
+        } else {
+            $('#upvote-btn-' + replyId).removeClass('active-vote');
+        }
+    } else {
+        alert('Une erreur est survenue lors de l\'upvote.');
+    }
+},
+        error: function(jqXHR, textStatus, errorThrown) {
+            // Afficher le code d'état, le message d'erreur et le contenu de la réponse
+            var errorMessage = "Erreur lors de la requête AJAX. ";
+            errorMessage += "Code d'état: " + jqXHR.status + ", ";
+            errorMessage += "Message: " + textStatus + ", ";
+            errorMessage += "Détail: " + jqXHR.responseText;
+
+            alert(errorMessage);
         }
     });
 }
+
+
 
 </script>
 

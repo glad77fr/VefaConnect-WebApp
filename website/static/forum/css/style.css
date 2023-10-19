@@ -14,3 +14,18 @@
       align-items: center;
       margin-bottom: 10px; 
   }
+
+/* Style général du bouton d'upvote */
+.upvote-btn {
+    text-decoration: none; 
+    color: gray;  /* Couleur par défaut */
+    transition: color 0.3s;  /* Animation douce lors du changement de couleur */
+  }
+  
+  /* Lorsque l'utilisateur a voté */
+  .upvote-btn.active-vote, 
+  .upvote-btn.active-vote .fas, 
+  .upvote-btn.active-vote .vote-count {
+    color: blue;  /* Couleur lorsque l'utilisateur a voté */
+  }
+  

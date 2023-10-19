@@ -181,6 +181,11 @@ class PostDetailView(DetailView):
 
         replies = Reply.objects.filter(post=self.object).order_by('date_posted')
         paginator = Paginator(replies, 10)
+         # Si l'utilisateur est authentifié, déterminez pour quelles réponses il a voté
+        if self.request.user.is_authenticated:
+            user_profile = UserProfile.objects.get(user=self.request.user)
+            user_upvoted_reply_ids = user_profile.upvoted_responses.all().values_list('id', flat=True)
+            context['user_upvoted_replies'] = set(user_upvoted_reply_ids)
         
         page = self.request.GET.get('page')
         context['replies'] = paginator.get_page(page)
@@ -262,19 +267,20 @@ class ProgramForumView(View):
 @login_required
 def upvote_reply(request, reply_id):
     reply = get_object_or_404(Reply, id=reply_id)
-    user = request.user
+    user_profile = UserProfile.objects.get(user=request.user)
     
     # Vérifier si l'utilisateur a déjà voté
-    if user in reply.upvoted_users.all():
+    if user_profile in reply.upvotes.all():
         # Si c'est le cas, retirez le vote
-        reply.upvoted_users.remove(user)
+        reply.upvotes.remove(user_profile)
         upvoted = False
     else:
         # Sinon, ajoutez le vote
-        reply.upvoted_users.add(user)
+        reply.upvotes.add(user_profile)
         upvoted = True
 
     return JsonResponse({
-        'upvoted': upvoted,
-        'count': reply.upvotes_count  # Assurez-vous d'avoir une propriété ou une méthode 'upvotes_count' sur le modèle 'ForumReply'
-    })
+    'upvoted': upvoted,
+    'count': reply.upvote_count,
+    'success': True   
+})

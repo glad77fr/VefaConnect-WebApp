@@ -123,8 +123,8 @@ class Reply(models.Model):
     post = models.ForeignKey(ForumPost, on_delete=models.CASCADE, related_name='replies')
     content = models.TextField()
     date_posted = models.DateTimeField(auto_now_add=True)
-    upvotes = models.ManyToManyField(User, related_name="upvoted_responses")
-    
+    upvotes = models.ManyToManyField(UserProfile, related_name="upvoted_responses")
+
     @property
     def upvote_count(self):
         return self.upvotes.count()
