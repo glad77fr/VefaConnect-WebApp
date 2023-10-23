@@ -1,39 +1,43 @@
-    {% extends 'base.html' %}
-    {% load static %}
+{% extends 'base.html' %}
+{% load static %}
 
-    {% block title %}Page d'accueil{% endblock %}
+{% block title %}Page d'accueil{% endblock %}
 
-    {% block content %}
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-        <!-- Font Awesome -->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
-
-
-    </head>
-        <!-- Hero Section -->
-        <div class="hero text-center  py-5">
-            <h1 class="display-4">VefaConnect</h1>
-            <p class="lead">Commencez à créer des liens avec vos futurs voisins.</p>
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-6 mx-auto my-5">
-                        <!-- Start of search form -->
-                        <form action="{% url 'program_search' %}" method="get">
-                            <div class="input-group">
-                                <input type="text" name="q" class="form-control" placeholder="Rechercher un programme">
-                                <div class="input-group-append">
-                                    <button class="btn btn-outline-secondary" type="submit">
-                                        <span class="fas fa-search"></span>
-                                    </button>
-                                </div>
+{% block content %}
+    <!-- Hero Section with Parallax Effect and Overlay -->
+    <div class="hero py-5" style="background-image: url('/media/website_image/main_photo.jpg'); background-attachment: fixed; background-size: cover; position: relative;">
+        <!-- Overlay: This is the actual superposition. It's a simple div with a semi-transparent background. -->
+        <div style="background-color: rgba(0, 0, 0, 0.5); position: absolute; top: 0; right: 0; bottom: 0; left: 0;"></div>
+        
+        <div class="container position-relative">
+            <div class="text-center py-4">
+                <h1 class="display-4 text-white">VefaConnect</h1>
+                <p class="lead text-white">Commencez à créer des liens avec vos futurs voisins.</p>
+            </div>
+            
+            <div class="row mt-5">
+                <div class="col-md-6 mx-auto">
+                    <p class="text-white mb-2">Cherchez un programme</p>
+                    <!-- Start of search form -->
+                    <form action="{% url 'program_search' %}" method="get">
+                        <div class="input-group">
+                            <input type="text" name="q" class="form-control" placeholder="Recherche...">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" type="submit">
+                                    <span class="fas fa-search text-white"></span>
+                                </button>
                             </div>
-                        </form>
-                        <!-- End of search form -->
-                    </div>
+                        </div>
+                    </form>
+                    <!-- End of search form -->
                 </div>
             </div>
         </div>
-    {% endblock %}
+    </div>
+
+    <!-- Additional content section -->
+    <div class="container my-4">
+        <p class="lead">Découvrez les dernières actualités, les programmes en vedette, et bien plus encore ici.</p>
+        <!-- Placeholder for other contents -->
+    </div>
+{% endblock %}

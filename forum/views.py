@@ -19,6 +19,7 @@ from django.utils.decorators import method_decorator
 from django.http import HttpResponse
 from website.models import RealEstateProgram
 from django.http import JsonResponse
+from django.db.models import Count
 
 
 def login_view(request):
@@ -179,7 +180,10 @@ class PostDetailView(DetailView):
         program_slug = self.kwargs.get('program_slug')
 
 
-        replies = Reply.objects.filter(post=self.object).order_by('date_posted')
+        replies = Reply.objects.filter(post=self.object) \
+            .annotate(vote_count=Count('upvotes')) \
+            .order_by('-vote_count', '-date_posted')
+        
         paginator = Paginator(replies, 10)
          # Si l'utilisateur est authentifié, déterminez pour quelles réponses il a voté
         if self.request.user.is_authenticated:
