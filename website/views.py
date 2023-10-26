@@ -16,12 +16,17 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import generic
 from .models import Article, Section,Category
 from django.shortcuts import render, get_object_or_404
+from .models import Article
 
 
 
-# Create your views here.
 def home(request):
-    return render(request, 'home.html')
+    articles = Article.objects.all().prefetch_related('section_set')[:3]
+    for article in articles:
+        article.main_image = article.section_set.filter(type="image", image_position="title").first()
+    return render(request, 'home.html', {'articles': articles})
+
+
 
 def ProgramSearchView(request):
     query = request.GET.get('q', '')

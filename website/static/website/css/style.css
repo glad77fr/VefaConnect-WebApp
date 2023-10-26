@@ -20,3 +20,37 @@ footer {
   height: 140px; /* Hauteur de votre footer */
 }
 
+/* Utilisation des variables pour la section héroïque */
+.hero {
+  background-image: url('/media/website_image/main_photo.jpg'); 
+  background-attachment: fixed; 
+  background-size: cover; 
+  position: relative;
+}
+
+.overlay {
+  position: absolute; 
+  top: 0; 
+  right: 0; 
+  bottom: 0; 
+  left: 0; 
+  background-color: var(--hero-overlay);
+}
+
+/* Utilisation des variables pour les autres styles, exemple pour le texte */
+.text-white {
+  color: var(--text-on-dark-bg) !important;
+}
+.navbar-custom {
+  background-color: var(--navbar-bg-color);
+}
+
+.navbar-custom .navbar-brand,
+.navbar-custom .nav-link {
+  color: var(--navbar-text-color);
+}
+
+.navbar-custom .navbar-brand:hover,
+.navbar-custom .nav-link:hover {
+  color: var(--navbar-link-hover-color);
+}

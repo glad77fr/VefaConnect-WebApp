@@ -1,0 +1,12 @@
+/* Appliquer la couleur par défaut aux boutons Bootstrap */
+.btn {
+    background-color: var(--btn-bg-color) !important;
+    color: var(--btn-text-color) !important;
+    border-color: var(--btn-bg-color) !important; /* Pour le bord des boutons */
+}
+
+/* Style au survol */
+.btn:hover, .btn:focus {
+    background-color: var(--btn-bg-hover) !important;
+    border-color: var(--btn-bg-hover) !important;
+}

@@ -1,0 +1,23 @@
+:root {
+    --primary-color: #007BFF;  /* Couleur principale (peut-être pour les boutons et les liens) */
+    --secondary-color: #6C757D; /* Couleur secondaire */
+    --background-color: #FFFFFF; /* Couleur d'arrière-plan */
+    --muted-text-color: #999999; /* Couleur de texte atténué */
+    --hero-overlay: rgba(0, 0, 0, 0.3); /* Couleur de superposition pour la section héroïque */
+    --text-on-light-bg: #333333;  /* Couleur de texte principal pour fond clair */
+    --text-on-dark-bg: #FFFFFF;   /* Couleur de texte pour fond foncé ou image */
+}
+
+/* Partie bouton */
+:root {
+    --btn-bg-color: #3498db; /* Couleur de fond par défaut */
+    --btn-text-color: #ffffff; /* Couleur de texte par défaut */
+    --btn-bg-hover: #2980b9; /* Couleur de fond au survol */
+}
+
+/* Partie navbar */
+:root {
+    --navbar-bg-color: #f8f9fa; /* Gris clair pour l'arrière-plan du navbar */
+    --navbar-text-color: #343a40; /* Couleur de texte standard pour le navbar */
+    --navbar-link-hover-color: #007bff; /* Couleur de survol pour les liens du navbar */
+}   

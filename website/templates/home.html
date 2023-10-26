@@ -1,43 +1,51 @@
 {% extends 'base.html' %}
 {% load static %}
-
+<link rel="stylesheet" href="{% static 'website/style.css' %}">
 {% block title %}Page d'accueil{% endblock %}
 
 {% block content %}
     <!-- Hero Section with Parallax Effect and Overlay -->
-    <div class="hero py-5" style="background-image: url('/media/website_image/main_photo.jpg'); background-attachment: fixed; background-size: cover; position: relative;">
-        <!-- Overlay: This is the actual superposition. It's a simple div with a semi-transparent background. -->
-        <div style="background-color: rgba(0, 0, 0, 0.5); position: absolute; top: 0; right: 0; bottom: 0; left: 0;"></div>
-        
+    <section class="hero d-flex align-items-center text-center py-5" style="background-image: url('/media/website_image/main_photo.jpg'); background-attachment: fixed; background-size: cover; position: relative;">
+        <div class="overlay" style="position: absolute; top: 0; right: 0; bottom: 0; left: 0; background-color: rgba(0, 0, 0, 0.6);"></div>
+
         <div class="container position-relative">
-            <div class="text-center py-4">
-                <h1 class="display-4 text-white">VefaConnect</h1>
-                <p class="lead text-white">Commencez à créer des liens avec vos futurs voisins.</p>
-            </div>
-            
-            <div class="row mt-5">
-                <div class="col-md-6 mx-auto">
-                    <p class="text-white mb-2">Cherchez un programme</p>
-                    <!-- Start of search form -->
-                    <form action="{% url 'program_search' %}" method="get">
-                        <div class="input-group">
-                            <input type="text" name="q" class="form-control" placeholder="Recherche...">
-                            <div class="input-group-append">
-                                <button class="btn btn-primary" type="submit">
-                                    <span class="fas fa-search text-white"></span>
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                    <!-- End of search form -->
+            <h1 class="display-4 text-white">VefaConnect</h1>
+            <p class="lead text-white">Commencez à créer des liens avec vos futurs voisins.</p>
+
+            <form action="{% url 'program_search' %}" method="get" class="search-form mx-auto mt-4">
+                <div class="input-group">
+                    <input type="text" name="q" class="form-control" placeholder="Recherchez un programme">
+                    <div class="input-group-append">
+                        <button class="btn btn-light" type="submit">
+                            <span class="fas fa-search"></span>
+                        </button>
+                    </div>
                 </div>
-            </div>
+            </form>
         </div>
-    </div>
+    </section>
 
     <!-- Additional content section -->
-    <div class="container my-4">
-        <p class="lead">Découvrez les dernières actualités, les programmes en vedette, et bien plus encore ici.</p>
-        <!-- Placeholder for other contents -->
+    <div class="container my-5">
+        <p class="lead mb-4">Découvrez les dernières actualités, les programmes en vedette, et bien plus encore ici.</p>
+
+        <div class="row">
+            {% for article in articles %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    {% if article.main_image %}
+                    <img src="{{ article.main_image.image.url }}" alt="{{ article.main_image.alt_text }}" class="card-img-top">
+                    {% endif %}
+
+                    <div class="card-body">
+                        <h5 class="card-title">{{ article.title }}</h5>
+                        <p class="card-text"><small class="text-muted">Publié le {{ article.publication_date }}</small></p>
+                        <p class="card-text">Auteur : {{ article.author.username }}</p>
+                        <a href="{% url 'article_detail' category_slug=article.category.slug slug=article.slug %}" class="btn btn-primary mt-3">Lire l'article</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
     </div>
 {% endblock %}
