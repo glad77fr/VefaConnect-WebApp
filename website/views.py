@@ -19,13 +19,11 @@ from django.shortcuts import render, get_object_or_404
 from .models import Article
 
 
-
 def home(request):
-    articles = Article.objects.all().prefetch_related('section_set')[:3]
+    articles = Article.objects.all().prefetch_related('section_set')[:6]
     for article in articles:
         article.main_image = article.section_set.filter(type="image", image_position="title").first()
     return render(request, 'home.html', {'articles': articles})
-
 
 
 def ProgramSearchView(request):

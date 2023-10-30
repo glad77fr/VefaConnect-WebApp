@@ -20,4 +20,11 @@
     --navbar-bg-color: #f8f9fa; /* Gris clair pour l'arrière-plan du navbar */
     --navbar-text-color: #343a40; /* Couleur de texte standard pour le navbar */
     --navbar-link-hover-color: #007bff; /* Couleur de survol pour les liens du navbar */
-}   
+}
+/* Variables pour le style du footer */
+:root {
+    --footer-bg-color: #f8f9fa; /* Couleur d'arrière-plan du footer */
+    --footer-heading-color: #343a40; /* Couleur des titres dans le footer */
+    --footer-link-color: #bdc3c7; /* Couleur des liens dans le footer */
+    --footer-link-hover-color: #ecf0f1; /* Couleur des liens lors du survol dans le footer */
+}

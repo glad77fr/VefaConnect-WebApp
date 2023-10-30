@@ -25,27 +25,51 @@
         </div>
     </section>
 
-    <!-- Additional content section -->
+    <!-- Articles Carousel -->
     <div class="container my-5">
         <p class="lead mb-4">Découvrez les dernières actualités, les programmes en vedette, et bien plus encore ici.</p>
-
-        <div class="row">
-            {% for article in articles %}
-            <div class="col-md-4 mb-4">
-                <div class="card h-100">
-                    {% if article.main_image %}
-                    <img src="{{ article.main_image.image.url }}" alt="{{ article.main_image.alt_text }}" class="card-img-top">
-                    {% endif %}
-
-                    <div class="card-body">
-                        <h5 class="card-title">{{ article.title }}</h5>
-                        <p class="card-text"><small class="text-muted">Publié le {{ article.publication_date }}</small></p>
-                        <p class="card-text">Auteur : {{ article.author.username }}</p>
-                        <a href="{% url 'article_detail' category_slug=article.category.slug slug=article.slug %}" class="btn btn-primary mt-3">Lire l'article</a>
+        <div id="articlesCarousel" class="carousel slide" data-ride="carousel">
+            <div class="carousel-inner">
+    
+                {% for article in articles %}
+                <!-- 1. Initialisation du groupe de carrousel -->
+                {% if forloop.counter0|divisibleby:3 %}
+                <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                    <div class="row">
+                {% endif %}
+    
+                <!-- 2. Affichage de l'article -->
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        {% if article.main_image %}
+                        <img src="{{ article.main_image.image.url }}" alt="{{ article.main_image.alt_text }}" class="card-img-top">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ article.title }}</h5>
+                            <p class="card-text"><small class="text-muted">Publié le {{ article.publication_date }}</small></p>
+                            <p class="card-text">Auteur : {{ article.author.username }}</p>
+                            <a href="{% url 'article_detail' category_slug=article.category.slug slug=article.slug %}" class="btn btn-primary mt-3">Lire l'article</a>
+                        </div>
                     </div>
                 </div>
+    
+                <!-- 3. Fermeture du groupe de carrousel -->
+                {% if forloop.counter|divisibleby:3 or forloop.last %}
+                    </div>
+                </div>
+                {% endif %}
+                {% endfor %}
+    
             </div>
-            {% endfor %}
+            <a class="carousel-control-prev" href="#articlesCarousel" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Précédent</span>
+            </a>
+            <a class="carousel-control-next" href="#articlesCarousel" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Suivant</span>
+            </a>
         </div>
     </div>
+    
 {% endblock %}

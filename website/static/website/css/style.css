@@ -17,7 +17,7 @@ main {
 footer {
   flex-shrink: 0;
   width: 100%;
-  height: 140px; /* Hauteur de votre footer */
+  height: 50px; /* Hauteur de votre footer */
 }
 
 /* Utilisation des variables pour la section héroïque */
@@ -53,4 +53,47 @@ footer {
 .navbar-custom .navbar-brand:hover,
 .navbar-custom .nav-link:hover {
   color: var(--navbar-link-hover-color);
+}
+
+
+/* Styles basés sur les variables du footer */
+.footer-modern {
+  background-color: var(--footer-bg-color);
+  padding: 8px 0; 
+}
+
+.footer-modern .footer-title {
+  color: var(--footer-text-color);
+  font-size: 0.9rem; 
+  margin-bottom: 8px; 
+}
+
+.footer-modern a {
+  color: var(--footer-link-color);
+  font-size: 0.8rem; 
+  transition: color 0.2s; 
+  margin-right: 12px; 
+  text-decoration: none; 
+}
+
+.footer-modern a:hover {
+  color: var(--footer-link-hover-color);
+}
+
+.footer-modern .social-logo {
+  font-size: 24px;
+  margin-right: 10px; 
+}
+
+.carousel-control-prev {
+  left: -10%; /* Éloigne la flèche de la gauche */
+}
+
+.carousel-control-next {
+  right: -10%; /* Éloigne la flèche de la droite */
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  background-color: rgba(0, 0, 0, 0.5); /* Change la couleur de fond des flèches pour les rendre plus visibles */
 }
