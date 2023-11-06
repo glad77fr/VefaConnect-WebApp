@@ -95,5 +95,87 @@ footer {
 
 .carousel-control-prev-icon,
 .carousel-control-next-icon {
-  background-color: rgba(0, 0, 0, 0.5); /* Change la couleur de fond des flèches pour les rendre plus visibles */
+    height: 20px; /* Vous pouvez ajuster selon vos besoins */
+    width: 20px; /* Vous pouvez ajuster selon vos besoins */
+    background-image: none; /* Supprimer l'image de fond par défaut de Bootstrap */
+}
+
+.carousel-control-prev-icon::before {
+    content: '\2039'; /* code Unicode pour la flèche gauche */
+    color: var(--primary-color); /* Utiliser la variable CSS pour la couleur */
+    font-size: 30px; /* Vous pouvez ajuster selon vos besoins */
+    display: inline-block;
+}
+
+.carousel-control-next-icon::before {
+    content: '\203A'; /* code Unicode pour la flèche droite */
+    color: var(--primary-color);
+    font-size: 30px;
+    display: inline-block;
+}
+
+.card {
+  margin: 0 5px; /* Petite marge horizontale */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Ombre subtile */
+  transition: box-shadow 0.3s ease; /* Transition douce pour l'effet d'ombre */
+}
+
+.card:hover {
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Ombre un peu plus profonde au survol */
+}
+
+.card-img-top {
+  height: 200px; /* Hauteur fixe pour les images */
+  object-fit: cover; /* Ajuste l'image proportionnellement */
+}
+
+
+.lead-modern {
+    font-family: 'Roboto', sans-serif; /* Police moderne */
+    font-size: 1.25em; /* Taille plus grande */
+    letter-spacing: 1px; /* Espacement des lettres */
+    line-height: 1.5; /* Interlignage */
+    color: #333; /* Couleur foncée pour le contraste */
+    background: rgba(255, 255, 255, 0.7); /* Arrière-plan semi-transparent */
+    padding: 10px 20px; /* Espacement autour du texte */
+    border-radius: 20px; /* Coins arrondis */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Ombre douce */
+    transition: all 0.3s; /* Animation douce pour les effets au survol */
+}
+
+.lead-modern:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Ombre plus prononcée au survol */
+    transform: translateY(-3px);
+    transition: transform 0.3s ease;
+  }    
+
+  .base-size {
+    font-size: 18px;
+    padding: 1rem 1.5rem; /* 16px 24px, en supposant que la taille de la police de base du navigateur soit 16px */
+    /* vous pouvez également ajouter une hauteur ici si nécessaire */
+    /* height: 50px; */
+}
+
+.search-form .form-control,
+.search-form .btn {
+    height: var(--search-bar-height);
+    padding: var(--search-bar-padding);
+    font-size: var(--search-bar-font-size);
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    transition: transform 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card-img-top {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+#map {
+  width: 100%;
+  height: 40px;
 }

@@ -3,10 +3,11 @@
     --secondary-color: #6C757D; /* Couleur secondaire */
     --background-color: #FFFFFF; /* Couleur d'arrière-plan */
     --muted-text-color: #999999; /* Couleur de texte atténué */
-    --hero-overlay: rgba(0, 0, 0, 0.3); /* Couleur de superposition pour la section héroïque */
+    --hero-overlay: rgba(0, 56, 73, 0.5); /* Couleur de superposition pour la section héroïque */
     --text-on-light-bg: #333333;  /* Couleur de texte principal pour fond clair */
     --text-on-dark-bg: #FFFFFF;   /* Couleur de texte pour fond foncé ou image */
 }
+
 
 /* Partie bouton */
 :root {
@@ -28,3 +29,10 @@
     --footer-link-color: #bdc3c7; /* Couleur des liens dans le footer */
     --footer-link-hover-color: #ecf0f1; /* Couleur des liens lors du survol dans le footer */
 }
+/* Variables pour le style de searchbar */
+:root {
+    --search-bar-height: 50px;
+    --search-bar-padding: 1rem 1.5rem;
+    --search-bar-font-size: 18px;
+  }
+  

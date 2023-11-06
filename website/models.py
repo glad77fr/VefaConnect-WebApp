@@ -4,7 +4,14 @@ import os
 from django.conf import settings
 from django.core.files import File
 from ckeditor_uploader.fields import RichTextUploadingField
+from geopy.geocoders import Nominatim
+from geopy.extra.rate_limiter import RateLimiter
+import logging
+import uuid
+import requests
 
+
+logger = logging.getLogger(__name__)
 
 # Create your models here.
 
@@ -32,9 +39,33 @@ class Address(models.Model):
     country = models.ForeignKey(Country, on_delete=models.CASCADE)
     city = models.ForeignKey(City, on_delete=models.CASCADE)
     street = models.CharField(max_length=200)
+    latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
+    longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
 
     def __str__(self):
         return f"{self.street}, {self.city}, {self.country}"
+    
+    def save(self, *args, **kwargs):
+        transaction_id = uuid.uuid4()
+        logger.info(f"[{transaction_id}] Starting the save process for Address")
+        if not self.latitude or not self.longitude:
+            geolocator = Nominatim(user_agent="VefaConnect")  # Assurez-vous d'utiliser un user_agent unique
+            geocode = RateLimiter(geolocator.geocode, min_delay_seconds=1)
+            address_str = f"{self.street}, {self.city.name}, {self.country.name}"
+            logger.info(f"[{transaction_id}] Attempting to geocode this address: {address_str}")
+            try:
+                location = geocode(address_str)
+                if location:
+                    self.latitude = location.latitude
+                    self.longitude = location.longitude
+                    logger.info(f"[{transaction_id}] Geocoded to: Lat {self.latitude}, Lon {self.longitude}")
+                else:
+                    logger.warning(f"[{transaction_id}] Geocoding failed, no location found.")
+            except Exception as e:
+                logger.error(f"[{transaction_id}] An error occurred during geocoding: {e}")
+
+        super().save(*args, **kwargs)  # Call the "real" save() method.
+        logger.info(f"[{transaction_id}] Save process completed for Address")
 
 class RealEstateDeveloper(models.Model):
     name = models.CharField(max_length=200, unique=True) 
@@ -64,6 +95,8 @@ class RealEstateProgram(models.Model):
     address = models.ForeignKey(Address, on_delete=models.CASCADE, null=True)
     image = models.ImageField(upload_to='program_images/', null=True, blank=True)
     validated = models.BooleanField(default=False, null=False)
+    date_added = models.DateField(null=True, blank=True, auto_now_add=True)
+
 
     class Meta:
         constraints = [

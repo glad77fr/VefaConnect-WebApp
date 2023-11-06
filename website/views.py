@@ -20,10 +20,24 @@ from .models import Article
 
 
 def home(request):
-    articles = Article.objects.all().prefetch_related('section_set')[:6]
+    articles = Article.objects.all().order_by('-publication_date').prefetch_related('section_set')[:6]
+    realEstatesPrograms = RealEstateProgram.objects.filter(validated=True).order_by('-date_added')[:6]
+
+    # Initialisation d'une liste vide pour les programmes suivis par l'utilisateur
+    user_programs = []
+
+    # Vérifie si l'utilisateur est connecté
+    if request.user.is_authenticated:
+        try:
+            profile = request.user.userprofile  # accède au profil de l'utilisateur
+            user_programs = profile.followed_programs.all().order_by('-date_added')[:6]
+        except UserProfile.DoesNotExist:
+            pass  # le profil n'existe pas pour cet utilisateur
+
     for article in articles:
         article.main_image = article.section_set.filter(type="image", image_position="title").first()
-    return render(request, 'home.html', {'articles': articles})
+    
+    return render(request, 'home.html', {'articles': articles, 'realEstatesPrograms': realEstatesPrograms, 'user_programs': user_programs})
 
 
 def ProgramSearchView(request):
@@ -52,7 +66,6 @@ class ProgramDetailView(DetailView):
         else:
             context['program_is_followed'] = False
         return context
-
 
 @login_required
 def follow_program_view(request, program_id):
