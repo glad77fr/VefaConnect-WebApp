@@ -125,57 +125,56 @@ footer {
 }
 
 .card-img-top {
-  height: 200px; /* Hauteur fixe pour les images */
+      
   object-fit: cover; /* Ajuste l'image proportionnellement */
 }
 
+.card {
+  display: flex;
+  flex-direction: column;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Pour que les boutons ne soient pas collés sur les petits écrans */
+.btn-details {
+    margin: 5px; /* Ajoute un peu d'espace autour des boutons */
+}
+
+/* Réglage de l'image pour qu'elle prenne 30% de la carte */
+.card-img-top {
+  width: 100%; /* force l'image à s'étendre sur toute la largeur */
+  height: auto; /* permet à l'image de maintenir son ratio d'aspect */
+  max-height: 30vh; /* utilise la hauteur de la fenêtre pour déterminer la hauteur maximale de l'image */
+}
+
+.card-body {
+  flex-grow: 1; /* permet au corps de la carte de remplir l'espace restant */
+}
+
+/* Espacement vertical entre les cartes */
+.card-container {
+  margin-bottom: 30px; /* Ajustez cette valeur selon l'espacement souhaité */
+}
 
 .lead-modern {
-    font-family: 'Roboto', sans-serif; /* Police moderne */
-    font-size: 1.25em; /* Taille plus grande */
-    letter-spacing: 1px; /* Espacement des lettres */
-    line-height: 1.5; /* Interlignage */
-    color: #333; /* Couleur foncée pour le contraste */
-    background: rgba(255, 255, 255, 0.7); /* Arrière-plan semi-transparent */
-    padding: 10px 20px; /* Espacement autour du texte */
-    border-radius: 20px; /* Coins arrondis */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Ombre douce */
-    transition: all 0.3s; /* Animation douce pour les effets au survol */
+  font-family: 'Roboto', sans-serif; /* Police moderne */
+  font-size: 1.5em; /* Taille plus grande */
+  letter-spacing: 1px; /* Espacement des lettres */
+  line-height: 1.5; /* Interlignage */
+  color: #333; /* Couleur foncée pour le contraste */
+  background: rgba(255, 255, 255, 0.7); /* Arrière-plan semi-transparent */
+  padding: 10px 20px; /* Espacement autour du texte */
+  border-radius: 20px; /* Coins arrondis */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Ombre douce */
+  transition: all 0.3s; /* Animation douce pour les effets au survol */
 }
 
 .lead-modern:hover {
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Ombre plus prononcée au survol */
-    transform: translateY(-3px);
-    transition: transform 0.3s ease;
-  }    
-
-  .base-size {
-    font-size: 18px;
-    padding: 1rem 1.5rem; /* 16px 24px, en supposant que la taille de la police de base du navigateur soit 16px */
-    /* vous pouvez également ajouter une hauteur ici si nécessaire */
-    /* height: 50px; */
-}
-
-.search-form .form-control,
-.search-form .btn {
-    height: var(--search-bar-height);
-    padding: var(--search-bar-padding);
-    font-size: var(--search-bar-font-size);
-    border: 1px solid #ced4da;
-    border-radius: 5px;
-    transition: transform 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.card-img-top {
-  width: 100%;
-  height: auto;
-  object-fit: cover;
-}
-
-#map {
-  width: 100%;
-  height: 40px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Ombre plus prononcée au survol */
+  transform: translateY(-3px); /* Légère élévation au survol */
 }

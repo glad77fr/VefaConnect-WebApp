@@ -10,13 +10,13 @@
         <div class="row">
             {% for programme in object_list %}
                 <div class="col-md-4 mb-4">
-                    <div class="card">
+                    <div class="card h-100">
                         {% if programme.image %}
                             <img src="{{ programme.image.url }}" alt="{{ programme.name }}" class="card-img-top">
                         {% else %}
                             <img src="{% static 'img/default_program_image.jpg' %}" alt="Image par défaut" class="card-img-top">
                         {% endif %}
-                        <div class="card-body">
+                        <div class="card-body d-flex flex-column">
                             <h5 class="card-title">{{ programme.name|capfirst }}</h5>
                             <p class="card-text">{{ programme.description|truncatechars:150 }}</p>
                             <p><strong>Développeur :</strong> {{ programme.developer.name }}</p> <!-- Supposant que votre modèle RealEstateDeveloper a un champ nom -->
@@ -30,8 +30,10 @@
                             {% if not programme.validated %}
                                 <p class="text-warning">En attente de validation</p>
                             {% endif %}
-
-                            <a href="{% url 'program_forum' program_slug=programme.slug %}" class="btn btn-primary">Forum</a> <!-- Crée un bouton qui mène vers le forum du programme -->
+                            <div class="card-footer mt-auto">
+                                <a href="{% url 'program_detail' slug=programme.slug %}" class="btn btn-details btn-primary mt-3">Détails</a>
+                                <a href="{% url 'program_forum' program_slug=programme.slug %}" class="btn btn-primary">Forum</a> <!-- Crée un bouton qui mène vers le forum du programme -->
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -34,21 +34,23 @@
         </div>
     </section>
 
-
     {% if user.is_authenticated %}
     <div class="container my-5">
         <p class="lead mb-4 lead-modern">Vos programmes suivis</p>
         <div class="row">
             {% for program in user_programs %}
-            <div class="col-md-4">
+            <div class="col-md-4 card-container">
                 <div class="card h-100">
                     {% if program.image %}
                     <img src="{{ program.image.url }}" alt="{{ program.name }}" class="card-img-top">
                     {% endif %}
-                    <div class="card-body">
+                    <div class="card-body d-flex flex-column">
                         <h5 class="card-title">{{ program.name }}</h5>
                         <p class="card-text">{{ program.description|truncatewords:15 }}</p>
-                        <a href="{% url 'program_detail' slug=program.slug %}" class="btn btn-primary mt-3">Voir le détail</a>
+                    </div>
+                    <div class="card-footer mt-auto">
+                        <a href="{% url 'program_detail' slug=program.slug %}" class="btn btn-details btn-primary mt-3">Détails</a>
+                        <a href="{% url 'program_forum' program_slug=program.slug %}" class="btn btn-details btn-primary mt-3"> Forum</a>   
                     </div>
                 </div>
             </div>

@@ -4,13 +4,15 @@
 {% block title %}Détails du programme - {{ program.name }}{% endblock %}
 
 {% block content %}
-<div class="container my-5">
+<div class="container my-3">
     <div class="row">
-        <div class="col-md-10 mx-auto">
+        <div class="col-md-9 mx-auto">
             <div class="card shadow-lg border-0 rounded-lg">
-                {% if program.image %}
-                <img src="{{ program.image.url }}" class="card-img-top" alt="{{ program.name }}">
-                {% endif %}
+                    
+                    {% if program.image %}
+                    <img src="{{ program.image.url }}" class="card-img-top h-30" alt="{{ program.name }}">
+                    {% endif %}
+                    
                 <div class="card-body">
                     <h2 class="card-title mb-4">{{ program.name }}</h2>
                     <hr>
@@ -28,12 +30,22 @@
                         <dd class="col-sm-8">{{ program.description }}</dd>
                     </dl>
 
+                    <div class="card map-card shadow-lg border-0 rounded-lg mt-4 mt-lg-0">
+                        <div id="mapid" class="card-img-top" style="height: 200px;"></div>
+                    </div>
+
                     {% if user.is_authenticated %}
                     <hr>
                     <div class="d-flex justify-content-center">
                         {% if not program_is_followed %}
                         <a href="{% url 'program_register' program.id %}" class="btn btn-primary">
                             Suivre <span class="split-text">le programme</span>
+                        </a>
+                        {% endif %}
+                        
+                        {% if program_is_followed %}
+                        <a href="{% url 'program_forum' program_slug=program.slug %}" class="btn btn-secondary">
+                            Forum <span class="split-text">du programme</span>
                         </a>
                         {% endif %}
                     </div>
@@ -50,23 +62,24 @@
             </div>
         </div>
     </div>
-    <div id="mapid" style="height: 400px;"></div>
+
 </div>
 
 
 {% endblock %}
-
+{% if program.address.latitude  and program.address.longitude %}
 {% block extra_js %}
 
 <script>
-    var map = L.map('mapid').setView([51.505, -0.09], 13);
+    var map = L.map('mapid').setView([{{ program.address.latitude }}, {{ program.address.longitude }}], 13);
 
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map);
 
-    var marker = L.marker([51.5, -0.09]).addTo(map);
-    marker.bindPopup("<b>Hello world!</b><br>I am a popup.").openPopup();   
+    var marker = L.marker([{{ program.address.latitude }}, {{ program.address.longitude }}]).addTo(map);
+    marker.bindPopup("<b>{{ program.name }}</b>").openPopup();   
 </script>
 {% endblock %}
+{% endif %}
