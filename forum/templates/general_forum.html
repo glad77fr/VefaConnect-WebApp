@@ -3,71 +3,48 @@
 
 {% block title %}Forum Général{% endblock %}
 
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static 'forum/css/style.css' %}">
+{% endblock %}
+
 {% block content %}
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <style>
-        /* Custom style for icons to fill the height of their cells */
-        .icon-full-height {
-            height: 100%;
-            font-size: 1.5em; /* Adjust this value to your preference */
-        }
-    </style>
-</head>
-
 <div class="container my-5">
-    <h1>{{ forum.name }}</h1>
+    <h1 class="text-center mb-4">{{ forum.name }}</h1>
 
-    <table class="table table-striped mt-4">
-        <thead>
-            <tr>
-                <th scope="col"></th> <!-- Empty header for icons -->
-                <th scope="col">Thèmes</th>
-                <th scope="col">Sujet(s)</th>  <!-- Added column header -->
-                <th scope="col">Réponse(s)</th>  <!-- Added column header -->
-                <th scope="col">Dernière activité</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for theme in themes %}
-                <tr>
-                    <!-- Icon Cell -->
-                    <td class="align-middle">
-                        {% if theme.icon_class %}
-                            <i class="{{ theme.icon_class }} icon-full-height"></i>
-                        {% endif %}
-                    </td>
-
-                    <!-- Thème & Description Cell -->
-                    <td>
-                        <!-- Lien vers le thème -->
-                        <div><a href="{% url 'general_forum_theme_detail' topic_slug=theme.slug %}">{{ theme.title }}</a></div>
-                        <!-- Description en dessous du thème -->
-                        <div>{{ theme.description }}</div>
-                    </td>
-
-                    <!-- Post Count Cell -->
-                    <td>
-                        {{ theme.post_count|default:"0" }}
-                    </td>
-
-                    <!-- Reply Count Cell -->
-                    <td>
-                        {{ theme.reply_count|default:"0" }}
-                    </td>
-
-                    <!-- Last Activity Cell -->
-                    <td>
-                        {% if theme.get_last_activity_date %}
-                            Dernière activité: {{ theme.get_last_activity_date|date:"d/m/Y H:i" }}
-                        {% endif %}
-                    </td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    {% for theme in themes %}
+    <div class="card mb-3">
+        <div class="card-body d-flex justify-content-between">
+            <div class="d-flex">
+                {% if theme.icon_class %}
+                    <div class="icon-container mr-3">
+                        <i class="{{ theme.icon_class }} icon-full-height"></i>
+                    </div>
+                {% endif %}
+                <div class="content">
+                    <h5 class="card-title"><a href="{% url 'general_forum_theme_detail' topic_slug=theme.slug %}" class="stretched-link">{{ theme.title }}</a></h5>
+                    <p class="card-text">{{ theme.description }}</p>
+                </div>
+            </div>
+            <div class="stats">
+                <div class="subjects d-flex align-items-center">
+                    <i class="fas fa-comments icon-subject"></i>
+                    <span>{{ theme.post_count|default:"0" }} Sujets</span>
+                </div>
+    
+                <div class="replies d-flex align-items-left">
+                    <i class="fas fa-reply icon-reply"></i>
+                    <span>{{ theme.reply_count|default:"0" }} Réponses</span>
+                </div>
+    
+                <div class="last-activity d-flex align-items-left">
+                    {% if theme.get_last_activity_date %}
+                        <i class="fas fa-clock icon-activity"></i>
+                        <span>Le {{ theme.get_last_activity_date|date:"d/m/Y H:i" }}</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
 </div>
-
 {% endblock %}

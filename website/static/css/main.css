@@ -36,3 +36,8 @@
     --search-bar-font-size: 18px;
   }
   
+/* Variable définissant la taille des icones et le résultat sur survol */
+  :root {
+    --icon-size: 1.5em;
+    --icon-hover-opacity: 1;
+}

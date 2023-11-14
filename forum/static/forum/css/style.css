@@ -1,0 +1,158 @@
+
+.django-ckeditor-widget{
+    width: 100%;
+  }
+
+  .elegant-hr {
+      border: 0;
+      height: 2px;
+      background-image: linear-gradient(to right, rgba(0,0,0,0), rgba(0,0,0,0.75), rgba(0,0,0,0));
+  }
+  .reply-btn-container {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      margin-bottom: 10px; 
+  }
+
+/* Style général du bouton d'upvote */
+.upvote-btn {
+    text-decoration: none; 
+    color: gray;  /* Couleur par défaut */
+    transition: color 0.3s;  /* Animation douce lors du changement de couleur */
+  }
+  
+  /* Lorsque l'utilisateur a voté */
+  .upvote-btn.active-vote, 
+  .upvote-btn.active-vote .fas, 
+  .upvote-btn.active-vote .vote-count {
+    color: blue;  /* Couleur lorsque l'utilisateur a voté */
+  }
+  
+body {
+    font-family: 'Open Sans', sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-on-light-bg);
+}
+.icon-full-height {
+    font-size: var(--icon-size);
+    color: var(--primary-color);
+    transition: opacity .3s ease; /* Ajouter une transition pour l'effet de survol */
+}
+
+.icon-full-height:hover {
+    opacity: var(--icon-hover-opacity);
+
+}
+
+/* Regroupement des propriétés de la carte */
+.card, .card:hover {
+    border: none;
+    border-radius: 0.25rem;
+}
+
+.card:hover {
+    box-shadow: 0 4px 8px rgba(0,0,0,.05);
+}
+
+/* Utiliser des variables CSS pour définir les couleurs */
+.card-title a,  a.theme-link {
+    color: var(--primary-color);
+}
+
+.card-title a:hover,  a.theme-link:hover {
+    text-decoration: underline;
+}
+
+.icon-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2em; /* Adjust the size of icons */
+    color: var(--primary-color);
+    width: 50px; /* ou toute autre dimension fixe que vous préférez */
+    
+
+}
+
+.post-count, .reply-count {
+    font-size: 0.9em;
+    color: var(--secondary-color);
+}
+
+.last-activity {
+    font-size: 0.8em;
+    color: var(--muted-text-color);
+}
+
+
+/* Style zébré pour les cartes du forum */
+.card:nth-of-type(odd) {
+    background-color: #f8f9fa; /* Couleur pour les cartes impaires */
+}
+
+/* Effet de survol pour la carte */
+.card:hover {
+    background-color: #f5f5f5; /* Couleur de fond au survol */
+    cursor: pointer; /* Indicateur de cliquabilité */
+}
+
+/* Effet au survol pour le titre du thème, en supprimant le surlignement */
+.card-title a {
+    color: inherit; /* Hérite de la couleur de .card-title */
+    text-decoration: none; /* Pas de soulignement */
+}
+
+.card-title a:hover {
+    color: #0056b3; /* Couleur au survol */
+    text-decoration: underline; /* Soulignement au survol si désiré */
+    transition: color 0.3s ease; /* Transition douce pour la couleur */
+}
+
+/* Style pour la colonne de dernière activité */
+/* Style pour la colonne de dernière activité */
+.last-activity-cell {
+    color: #555; /* Couleur du texte pour la colonne */
+}
+
+.icon-activity {
+    color: #6c757d; /* Couleur discrète de l'icône */
+    margin-right: 5px; /* Espace entre l'icône et le texte */
+}
+
+.last-activity-date {
+    font-weight: normal; /* P   olice normale plutôt qu'en gras */
+    color: #6c757d; /* Couleur assortie à l'icône pour la cohérence */
+}
+/* Styles pour les icônes des sujets et réponses */
+.icon-subject,
+.icon-reply {
+    color: #6c757d; /* Couleur discrète de l'icône */
+    margin-right: 5px; /* Espace entre l'icône et le texte */
+}
+
+
+.stats {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 20%; /* Ajuster pour occuper jusqu'à 1/4 de la carte */
+    align-items: flex-start; 
+    min-width: 20%;
+}
+
+.subjects, .replies, .last-activity {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.icon-subject, .icon-reply, .icon-activity {
+    margin-right: 0.5rem;
+}
+.content {
+    flex-basis: 80%; /* Ajuster en conséquence */
+}
+.stat-item {
+    display: flex;
+    align-items: flex-start;  /* Pour aligner verticalement l'icône avec le texte */
+}
