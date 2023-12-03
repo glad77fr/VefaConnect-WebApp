@@ -1,6 +1,6 @@
 from django import forms
 from .models import FollowedProgram
-from .models import RealEstateProgram, Address,RealEstateDeveloper, Country,City
+from .models import RealEstateProgram, Address,RealEstateDeveloper, Country,City, State
 
 class FollowedProgramForm(forms.ModelForm):
     IS_OWNER_CHOICES = [
@@ -33,9 +33,16 @@ class RealEstateProgramForm(forms.ModelForm):
     address = forms.ModelChoiceField(Address.objects.all(), required=False, widget=forms.HiddenInput())
     image = forms.ImageField(widget=forms.FileInput(attrs={'class': 'custom-file-input'}))
     country = forms.ModelChoiceField(queryset=Country.objects.all().order_by('name'), 
-                                     widget=forms.Select(attrs={'class': 'form-control select2'}))
-    city = forms.ModelChoiceField(queryset=City.objects.all().order_by('name'),
-                                  widget=forms.Select(attrs={'class': 'form-control select2'}))
+                                     widget=forms.Select(attrs={'class': 'form-control select2', 'id': 'id_country'}))
+                                     
+    
+    city = forms.ModelChoiceField(queryset=City.objects.all().none(),
+                                  widget=forms.Select(attrs={'class': 'form-control select2', 'id': 'id_city'}))
+    
+    states = forms.ModelChoiceField(queryset=State.objects.none(),  # Aucun état initialement
+        widget=forms.Select(attrs={'class': 'form-control select2','id':'id_states'}),
+        required=False)
+                                    
     street = forms.CharField()
     developer = forms.ModelChoiceField(queryset=RealEstateDeveloper.objects.all().order_by('name'), 
                                        widget=forms.Select(attrs={'class': 'form-control custom-select'}))

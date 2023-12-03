@@ -22,6 +22,14 @@ class Country(models.Model):
     def __str__(self):
         return self.name
 
+class State(models.Model):
+    name = models.CharField(max_length=200)
+    code = models.CharField(max_length=20, null=True)
+    country = models.ForeignKey(Country, on_delete=models.CASCADE, null=True)
+    
+    def __str__(self):
+        return self.name
+    
 class City(models.Model):
     name = models.CharField(max_length=200)
     country = models.ForeignKey(Country, on_delete=models.CASCADE)
@@ -29,8 +37,8 @@ class City(models.Model):
     longitude = models.DecimalField(max_digits=30, decimal_places=23, null=True, blank=True)
     postal_code = models.CharField(max_length=20, null=True)
     department = models.CharField(max_length=200, null=True)
-    region = models.CharField(max_length=200, null=True)
     department_code = models.CharField(max_length=200, null=True)
+    state = models.ForeignKey(State, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return self.name
@@ -96,7 +104,6 @@ class RealEstateProgram(models.Model):
     image = models.ImageField(upload_to='program_images/', null=True, blank=True)
     validated = models.BooleanField(default=False, null=False)
     date_added = models.DateField(null=True, blank=True, auto_now_add=True)
-
 
     class Meta:
         constraints = [

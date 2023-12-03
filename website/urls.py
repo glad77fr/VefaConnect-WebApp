@@ -7,6 +7,7 @@ from django.contrib.auth.views import LogoutView
 from .views import my_programs
 from .views import create_program
 from .views import ArticleDetailView
+from .views import load_states, load_cities
 
 
 class LogoutAndStay(LogoutView):
@@ -28,6 +29,6 @@ urlpatterns = [
     path('article/category/<slug:category_slug>/<slug:slug>/', ArticleDetailView.as_view(), name='article_detail'),
     path('articles/category/<slug:category_slug>/', views.category_articles, name='category_articles'),
     path('categories/<slug:category_slug>/', views.category_articles, name='category_articles'),
-
-
+    path('ajax/load-states/', load_states, name='ajax_load_states'),
+    path('ajax/load-cities/', load_cities, name='ajax_load_cities'),
 ]

@@ -59,6 +59,15 @@
               <div class="invalid-feedback">{{ error }}</div>
           {% endfor %}
         </div>
+
+<div class="form-group">
+    <label for="{{ form.states.id_for_label }}">States *</label>
+    {{ form.states }}
+    {% for error in form.states.errors %}
+        <div class="invalid-feedback">{{ error }}</div>
+    {% endfor %}
+</div>
+
         <div class="form-group">
           <label for="{{ form.city.id_for_label }}">Ville *</label>
           {{ form.city|add_class:"form-control select2" }}
@@ -88,6 +97,55 @@
             $('.select2').select2();
         });
     </script>
+
+
+<script>
+  $(document).ready(function() {
+      function updateSelectField(selectId, url, paramName, paramValue) {
+          console.log("Mise à jour du champ: " + selectId + " avec l'URL: " + url);
+
+          $.ajax({
+              url: url,
+              data: {
+                  [paramName]: paramValue
+              },
+              success: function (data) {
+                  console.log("Données reçues: ", data);
+                  var select = $(selectId);
+                  select.empty(); // Vider les options existantes
+
+                  // Ajouter une option vide par défaut
+                  select.append(new Option("", "", true, true));
+
+                  // Ajouter les nouvelles options
+                  data.forEach(function (item) {
+                      select.append(new Option(item.name, item.id, false, false));
+                  });
+
+                  // Réappliquer Select2 sur le champ mis à jour
+                  select.select2();
+              }
+          });
+      }
+
+      $('#id_country').change(function() {
+          var countryId = $(this).val();  // ID du pays sélectionné
+          var url = "{% url 'ajax_load_states' %}"; // URL de la vue Django qui renvoie les états
+          updateSelectField('#id_states', url, 'country', countryId);
+      });
+
+      $('#id_states').change(function() {
+          var statesId = $(this).val();  // ID du pays sélectionné
+          console.log("states :", statesId)
+          var url = "{% url 'ajax_load_cities' %}"; // URL de la vue Django qui renvoie les états
+          updateSelectField('#id_city', url, 'states', statesId);
+      });
+
+  });
+</script>
+
+
+</script>
 {% endblock %}
 {% block footer %}
 

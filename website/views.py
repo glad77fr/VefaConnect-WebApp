@@ -17,6 +17,8 @@ from django.views import generic
 from .models import Article, Section,Category
 from django.shortcuts import render, get_object_or_404
 from .models import Article
+from django.http import JsonResponse
+from .models import State, City
 
 
 def home(request):
@@ -160,4 +162,13 @@ def category_articles(request, category_slug):
         'articles': articles,
     })
 
+def load_states(request):
+    country_id = request.GET.get('country')
+    states = State.objects.filter(country_id=country_id).order_by('name')
+    #print(list(states.values('id', 'name')))
+    return JsonResponse(list(states.values('id', 'name')), safe=False)
 
+def load_cities(request):
+    state_id = request.GET.get('states')  # Récupération de l'ID de l'état sélectionné
+    cities = City.objects.filter(state_id=state_id).order_by('name')  # Filtrage des villes par l'état sélectionné
+    return JsonResponse(list(cities.values('id', 'name')), safe=False)  # Envoi des villes au format JSON

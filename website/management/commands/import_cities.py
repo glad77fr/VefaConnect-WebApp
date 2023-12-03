@@ -1,7 +1,7 @@
 import csv
 from decimal import Decimal, InvalidOperation
 from django.core.management.base import BaseCommand
-from website.models import City, Country
+from website.models import City, Country, State
 
 class Command(BaseCommand):
     help = 'Import data for City from CSV file'
@@ -13,7 +13,7 @@ class Command(BaseCommand):
         csv_file = options['csv_file']
         
         with open(csv_file, 'r',encoding='utf-8') as file:
-            reader = csv.DictReader(file, delimiter=';')
+            reader = csv.DictReader(file, delimiter=',')
             for row in reader:
                 print(row)
                 # Try to convert latitude and longitude to decimal, if fails, set to None
@@ -26,15 +26,26 @@ class Command(BaseCommand):
                     longitude = Decimal(row['longitude'])
                 except (ValueError, TypeError, InvalidOperation):
                     longitude = None
-
-                city = City.objects.create(
-                    name=row['name'],
-                    country=Country.objects.get(code=row['country']),
-                    postal_code=row['postal_code'],
-                    latitude=latitude,
-                    longitude=longitude,
-                    department=row['department'],
-                    region=row['region'],
-                    department_code = row['department_code']
+                
+                # Get or create the corresponding state
+                state, created = State.objects.get_or_create(
+                    code=row['department_number'],
+                    defaults={'name': row['department_name'], 'country': Country.objects.get(code="FR")}
                 )
-                self.stdout.write(self.style.SUCCESS(f'Successly imported data for city: {city}'))
+                
+                # Now use the state instance to create the city
+                city, created = City.objects.get_or_create(
+                    name=row['label'],
+                    defaults={
+                        'country': Country.objects.get(code="FR"),
+                        'postal_code': row['zip_code'],
+                        'latitude': latitude,
+                        'longitude': longitude,
+                        'department_code': row['department_number'],
+                        'state': state
+                    }
+                )
+                if created:
+                    self.stdout.write(self.style.SUCCESS(f'Successfully imported data for city: {city}'))
+                else:
+                    self.stdout.write(self.style.WARNING(f'City already exists: {city}'))

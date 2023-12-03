@@ -41,3 +41,32 @@
     </div>
   </div>
 {% endblock %}
+
+<script type="text/javascript">
+  // Cette fonction sera appelée à chaque changement de la sélection du département
+  function updateCities() {
+      var departmentId = $('#id_department').val(); // Obtenez l'ID du département sélectionné
+      if (departmentId) {
+          $.ajax({
+              url: '/ajax/load-cities/', // URL de la vue Django qui retourne les villes pour un département donné
+              data: {
+                  'department': departmentId
+              },
+              success: function (data) {
+                  $('#id_city').html(data); // Remplacez le contenu du champ ville avec les nouvelles options
+                  $('#id_city').prop('disabled', false); // Réactivez le champ ville
+              }
+          });
+      } else {
+          $('#id_city').html(''); // Videz le champ ville si aucun département n'est sélectionné
+          $('#id_city').prop('disabled', true); // Désactivez le champ ville
+      }
+  }
+  
+  // Initialisation au chargement de la page
+  $(document).ready(function() {
+      updateCities(); // Mettez à jour les villes lors du chargement initial en fonction du département déjà sélectionné
+      $('#id_department').change(updateCities); // Liez la fonction updateCities au changement du champ département
+  });
+  </script>
+  

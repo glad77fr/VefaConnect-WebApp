@@ -51,11 +51,9 @@
                 </li>
                 {% else %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'login'%}">Login</a>
+                    <a class="btn btn-outline-primary my-2 my-sm-0" href="{% url 'login' %}">Se connecter</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'register'%}">Sign up</a>
-                </li>
+   
                 {% endif %}
             </ul>
         </div>

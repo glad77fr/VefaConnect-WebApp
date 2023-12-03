@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
-<link rel="stylesheet" href="{% static 'website/style.css' %}">
+<link rel="stylesheet" href="{% static 'website/css/style.css' %}">
 {% block title %}Page d'accueil{% endblock %}
 
 {% block content %}
@@ -21,16 +21,17 @@
                 <p class="lead text-white">Commencez à créer des liens avec vos futurs voisins.</p>
             {% endif %}
 
-            <form action="{% url 'program_search' %}" method="get" class="search-form mx-auto mt-4">
-                <div class="input-group">
-                    <input type="text" name="q" class="form-control base-size" placeholder="Trouvez votre futur chez-vous ici...">
-                    <div class="input-group-append">
-                        <button class="btn btn-light base-size" type="submit">
-                            <span class="fas fa-search "></span>
-                        </button>
-                    </div>
-                </div>
+            <form action="{% url 'program_search' %}" method="get" class="search-form">
+                
+                <input type="text" name="q" class="search" placeholder="Trouvez votre futur chez-vous ici...">
+                
+                <a href="#" class="search-icon-link">
+                    <i class="fas fa-search search-icon"></i>
+                </a>
+                
             </form>
+
+            
         </div>
     </section>
 
@@ -93,21 +94,14 @@
                 {% endfor %}
     
             </div>
-            <a class="carousel-control-prev" href="#articlesCarousel" role="button" data-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="sr-only">Précédent</span>
-            </a>
-            <a class="carousel-control-next" href="#articlesCarousel" role="button" data-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="sr-only">Suivant</span>
-            </a>
+          
         </div>
     </div>
     {% endif %}
 
      <!-- Programmes Immobiliers Carousel -->
 <div class="container my-5">
-    <p class="lead mb-4 lead-modern">Trouvez l'appartement ou la maison de vos rêves parmi nos nouveaux programmes immobiliers</p>
+    <p class="lead mb-4 lead-modern">Découvrer les nouveaux programmes immobiliers</p>
     <div id="realEstateProgramsCarousel" class="carousel slide" data-ride="carousel">
         <div class="carousel-inner">
 
@@ -141,20 +135,13 @@
             {% endfor %}
 
         </div>
-        <a class="carousel-control-prev" href="#realEstateProgramsCarousel" role="button" data-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="sr-only">Précédent</span>
-        </a>
-        <a class="carousel-control-next" href="#realEstateProgramsCarousel" role="button" data-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="sr-only">Suivant</span>
-        </a>
+    
     </div>
 </div>
 {% if not user.is_authenticated %}
-    <!-- Articles Carousel -->
+    <!-- Articles Carousel -->  
     <div class="container my-5">
-        <p class="lead mb-4 lead-modern">Restez à la pointe de l'actualité avec nos derniers articles</p>
+        <p class="lead mb-4 lead-modern">Restez à la pointe de l'actualité</p>
         <div id="articlesCarousel" class="carousel slide" data-ride="carousel">
             <div class="carousel-inner">
     
@@ -188,26 +175,28 @@
                 {% endfor %}
     
             </div>
-            <a class="carousel-control-prev" href="#articlesCarousel" role="button" data-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="sr-only">Précédent</span>
-            </a>
-            <a class="carousel-control-next" href="#articlesCarousel" role="button" data-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="sr-only">Suivant</span>
-            </a>
+
         </div>
     </div>
 
     {% endif %}
 
 <script>
-    const placeholders = ["Recherchez un programme par ville...", "Recherchez un programme par type de bien..."];
+    const placeholders = ["Recherchez un programme par nom...", "Recherchez un programme par ville..."];
     let index = 0;
     setInterval(() => {
         document.querySelector('.search-form input[type="text"]').placeholder = placeholders[index];
         index = (index + 1) % placeholders.length;
     }, 3000); // Change tous les 3 secondes
+
+    
+</script>
+<script>
+    document.querySelector('.search-icon-link').addEventListener('click', function(event) {
+    event.preventDefault(); // Empêcher le lien de changer la page
+    this.closest('form').submit(); // Soumettre le formulaire lorsque le lien est cliqué
+});
+
 </script>
     
 {% endblock %}

@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import RealEstateDeveloper, RealEstateProgram,UnvalidatedRealEstateProgram, FollowedProgram, Country, City, Address
+from .models import RealEstateDeveloper, RealEstateProgram,UnvalidatedRealEstateProgram 
+from .models import FollowedProgram, Country, City, Address, State
 from .models import Article, Section, Category
 
 @admin.register(RealEstateDeveloper)
@@ -71,3 +72,8 @@ class CategoryAdmin(admin.ModelAdmin):
     list_display = ('name', 'slug', 'description',)
     list_filter = ('name',)
     search_fields = ('name',)
+
+@admin.register(State)
+class RealEstateDeveloperAdmin(admin.ModelAdmin):
+    list_display = ('code', 'name','country')
+    search_fields = ('code', 'name','country')

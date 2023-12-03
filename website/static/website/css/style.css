@@ -85,35 +85,6 @@ footer {
   margin-right: 10px; 
 }
 
-.carousel-control-prev {
-  left: -10%; /* Éloigne la flèche de la gauche */
-}
-
-.carousel-control-next {
-  right: -10%; /* Éloigne la flèche de la droite */
-}
-
-.carousel-control-prev-icon,
-.carousel-control-next-icon {
-    height: 20px; /* Vous pouvez ajuster selon vos besoins */
-    width: 20px; /* Vous pouvez ajuster selon vos besoins */
-    background-image: none; /* Supprimer l'image de fond par défaut de Bootstrap */
-}
-
-.carousel-control-prev-icon::before {
-    content: '\2039'; /* code Unicode pour la flèche gauche */
-    color: var(--primary-color); /* Utiliser la variable CSS pour la couleur */
-    font-size: 30px; /* Vous pouvez ajuster selon vos besoins */
-    display: inline-block;
-}
-
-.carousel-control-next-icon::before {
-    content: '\203A'; /* code Unicode pour la flèche droite */
-    color: var(--primary-color);
-    font-size: 30px;
-    display: inline-block;
-}
-
 .card {
   margin: 0 5px; /* Petite marge horizontale */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Ombre subtile */
@@ -124,14 +95,14 @@ footer {
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Ombre un peu plus profonde au survol */
 }
 
-.card-img-top {
-      
+.card-img-top {   
   object-fit: cover; /* Ajuste l'image proportionnellement */
 }
 
 .card {
   display: flex;
   flex-direction: column;
+  
 }
 
 .card-footer {
@@ -178,3 +149,52 @@ footer {
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Ombre plus prononcée au survol */
   transform: translateY(-3px); /* Légère élévation au survol */
 }
+
+/* Custom styles for the search bar */
+.search-form {
+  margin:0 auto;
+  width:575px;
+  border-radius:30px;
+  border:1px solid #dcdcdc;
+  flex-grow: 1;
+  background-color:  var(--background-color);
+  
+}
+
+.search {
+  height:45px;
+  border:none;
+  width:500px;
+  font-size:16px;
+  outline: none; 
+}
+
+.search-form:hover{
+  box-shadow: 1px 1px 8px 1px #dcdcdc;
+}
+.search-form:focus-within{
+  box-shadow: 1px 1px 8px 1px #dcdcdc;
+  outline:none;
+}
+
+/* Hover effect */
+.search-form .search-button:hover,
+.search-form .search-button:focus {
+    background-color: #f8f9fa; /* Couleur de fond légèrement différente au survol */
+    transition: background-color 0.3s; /* Transition douce pour l'effet de survol */
+}
+
+.search-form .search-button:hover .fa-search,
+.search-form .search-button:focus .fa-search {
+    color: #555; /* Changement de couleur de l'icône au survol */
+    transition: color 0.3s; /* Transition douce pour l'effet de survol */
+}
+/* Hover effect */
+.search-form .search-icon-link:hover .search-icon {
+  color: #555; /* Change icon color on hover */
+  transition: color 0.3s; /* Smooth transition for hover effect */
+}
+.search-form .search-icon {
+  font-size: 1.2em;
+}
+
