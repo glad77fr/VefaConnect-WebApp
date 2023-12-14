@@ -9,6 +9,7 @@ from .views import reply_to_post
 from .views import access_denied
 
 
+
 urlpatterns = [
     path('login/', views.login_view, name='login'),
     path('register/', views.register_view, name='register'),
@@ -25,4 +26,5 @@ urlpatterns = [
     path('access-denied/', access_denied, name='access_denied'),
     path('program_forum/<slug:program_slug>/', views.ProgramForumView.as_view(), name='program_forum'),
     path('upvote_reply/<int:reply_id>/', views.upvote_reply, name='upvote_reply'),
+    
 ]

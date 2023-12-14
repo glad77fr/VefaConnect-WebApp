@@ -6,6 +6,10 @@ from django.db.models import Max
 import itertools
 from django.dispatch import receiver
 from django.db.models.signals import pre_save
+from django.shortcuts import get_object_or_404, redirect
+from website.models import FollowedProgram
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 # Create your models here.
 class UserProfile(models.Model):
@@ -128,3 +132,4 @@ class Reply(models.Model):
     @property
     def upvote_count(self):
         return self.upvotes.count()
+

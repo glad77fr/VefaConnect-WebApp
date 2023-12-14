@@ -20,6 +20,7 @@ from .models import Article
 from django.http import JsonResponse
 from .models import State, City
 from django.contrib import messages
+from django.views.decorators.http import require_POST
 
 
 def home(request):
@@ -187,3 +188,12 @@ def load_cities(request):
     state_id = request.GET.get('states')  # Récupération de l'ID de l'état sélectionné
     cities = City.objects.filter(state_id=state_id).order_by('name')  # Filtrage des villes par l'état sélectionné
     return JsonResponse(list(cities.values('id', 'name')), safe=False)  # Envoi des villes au format JSON
+
+# Méthode pour supprimer le lien entre un utilisateur et un programme
+@login_required
+@require_POST  # S'assure que la vue ne peut être accédée que via POST
+def unfollow_program(request, program_id):
+    program = get_object_or_404(RealEstateProgram, pk=program_id)
+    FollowedProgram.objects.filter(user_profile=request.user.userprofile, program=program).delete()
+    messages.info(request, "Vous avez cessé de suivre le programme.")
+    return redirect('home')  # Ou toute autre vue que vous souhaitez rediriger après l'action

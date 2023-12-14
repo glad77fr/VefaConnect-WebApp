@@ -10,9 +10,6 @@ import logging
 import uuid
 import requests
 
-
-
-
 logger = logging.getLogger(__name__)
 
 # Create your models here.
@@ -94,9 +91,7 @@ class RealEstateDeveloper(models.Model):
             if not self.slug:  # In case the object was saved before but without a slug
                 self.slug = slugify(f'{self.name}-{self.pk}')
         super(RealEstateDeveloper, self).save(*args, **kwargs)  # Save the object again, with the slug
-        
-
-
+     
 class RealEstateProgram(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True)
@@ -140,7 +135,6 @@ class RealEstateProgram(models.Model):
 
             # Save the model again to record any changes we've made
             super().save(*args, **kwargs)
-
 
 class UnvalidatedRealEstateProgram(RealEstateProgram):
     class Meta:
@@ -222,5 +216,4 @@ class Section(models.Model):
     image = models.ImageField(upload_to='articles/sections/', blank=True, null=True)
     caption = models.TextField(blank=True)        # Légende pour l'image
     alt_text = models.CharField(max_length=255, blank=True)   # Texte alternatif pour l'image
-    
-
+  
