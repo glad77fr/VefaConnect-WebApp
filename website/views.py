@@ -19,6 +19,7 @@ from django.shortcuts import render, get_object_or_404
 from .models import Article
 from django.http import JsonResponse
 from .models import State, City
+from django.contrib import messages
 
 
 def home(request):
@@ -119,12 +120,27 @@ class FollowedProgramConfirmationView(TemplateView):
 def create_program(request):
     if request.method == "POST":
         form = RealEstateProgramForm(request.POST, request.FILES)
+
+        # Mise à jour des querysets pour 'city' et 'states'
+        form.fields['city'].queryset = City.objects.filter(id=request.POST.get('city', 0))
+        form.fields['states'].queryset = State.objects.filter(id=request.POST.get('states', 0))
+
         if form.is_valid():
             form.save()
-            return redirect('program_search')
+            messages.success(request, "Votre demande d'ajout de programme a bien été soumise, elle va être à présent validée. Vous serez notifié de sa validation.")
+            return redirect('home')
+            
+        else:
+            # Afficher les erreurs de validation
+            print("Erreurs du formulaire :", form.errors)
+            # Affichage des valeurs soumises pour débogage
+            print("Valeurs soumises pour city:", request.POST.get('city'))  
+            print("Valeurs soumises pour states:", request.POST.get('states'))
     else:
         form = RealEstateProgramForm()
-    return render(request, 'create_program.html', {'form': form})  
+
+    return render(request, 'create_program.html', {'form': form})
+
 
 @login_required
 def my_programs(request):
@@ -146,7 +162,6 @@ class ArticleDetailView(DetailView):
     context_object_name = 'article'
     slug_field = 'slug'
     slug_url_kwarg = 'slug'
-    
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

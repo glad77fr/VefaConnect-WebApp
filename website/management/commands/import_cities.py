@@ -35,7 +35,7 @@ class Command(BaseCommand):
                 
                 # Now use the state instance to create the city
                 city, created = City.objects.get_or_create(
-                    name=row['label'],
+                    name=row['label'].capitalize(),
                     defaults={
                         'country': Country.objects.get(code="FR"),
                         'postal_code': row['zip_code'],

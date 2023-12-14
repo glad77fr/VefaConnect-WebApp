@@ -39,8 +39,10 @@ class CountryAdmin(admin.ModelAdmin):
 @admin.register(City)
 class CityAdmin(admin.ModelAdmin):
     list_display = ('name', 'country')
-    list_filter = ('country',)
+    list_filter = ('name', 'country')
     search_fields = ('name', 'country__name')
+
+    
 
 @admin.register(Address)
 class AddressAdmin(admin.ModelAdmin):

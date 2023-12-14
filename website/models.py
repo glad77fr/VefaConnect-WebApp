@@ -11,6 +11,8 @@ import uuid
 import requests
 
 
+
+
 logger = logging.getLogger(__name__)
 
 # Create your models here.
@@ -46,6 +48,7 @@ class City(models.Model):
 class Address(models.Model):
     country = models.ForeignKey(Country, on_delete=models.CASCADE)
     city = models.ForeignKey(City, on_delete=models.CASCADE)
+    state = models.ForeignKey(State, on_delete=models.CASCADE)
     street = models.CharField(max_length=200)
     latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
     longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
@@ -91,6 +94,7 @@ class RealEstateDeveloper(models.Model):
             if not self.slug:  # In case the object was saved before but without a slug
                 self.slug = slugify(f'{self.name}-{self.pk}')
         super(RealEstateDeveloper, self).save(*args, **kwargs)  # Save the object again, with the slug
+        
 
 
 class RealEstateProgram(models.Model):
@@ -105,13 +109,6 @@ class RealEstateProgram(models.Model):
     validated = models.BooleanField(default=False, null=False)
     date_added = models.DateField(null=True, blank=True, auto_now_add=True)
 
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(fields=['name', 'address', 'developer'], name='unique_program')
-        ]
-    def __str__(self):
-            return self.name
-    
     def save(self, *args, **kwargs):
             self.name = self.name.strip().lower()  # Normalize the name by converting to lowercase and trimming whitespace
 

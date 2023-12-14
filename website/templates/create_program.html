@@ -61,7 +61,7 @@
         </div>
 
 <div class="form-group">
-    <label for="{{ form.states.id_for_label }}">States *</label>
+    <label for="{{ form.states.id_for_label }}">Département *</label>
     {{ form.states }}
     {% for error in form.states.errors %}
         <div class="invalid-feedback">{{ error }}</div>
@@ -69,24 +69,22 @@
 </div>
 
         <div class="form-group">
-          <label for="{{ form.city.id_for_label }}">Ville *</label>
+          <label for="{{ form.city.id_for_label }}">Commune *</label>
           {{ form.city|add_class:"form-control select2" }}
           {% for error in form.city.errors %}
               <div class="invalid-feedback">{{ error }}</div>
           {% endfor %}
         </div>
         <div class="form-group">
-          <label for="{{ form.street.id_for_label }}">Rue *</label>
+          <label for="{{ form.street.id_for_label }}">Numéro de rue et rue *</label>
           <input type="text" class="form-control {% if form.street.errors %}is-invalid{% endif %}" id="{{ form.street.id_for_label }}" name="{{ form.street.html_name }}" value="{{ form.street.value|default:'' }}" />
           {% for error in form.street.errors %}
             <div class="invalid-feedback">{{ error }}</div>
           {% endfor %}
         </div>
         <button type="submit" class="btn btn-primary">Soumettre</button>
-      </form>
-    </div>
-  </div>
 </div>
+
 
 <!-- Initialize Select2 on 'country' and 'city' fields -->
 {% endblock %}

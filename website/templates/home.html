@@ -27,14 +27,19 @@
                 
                 <a href="#" class="search-icon-link">
                     <i class="fas fa-search search-icon"></i>
-                </a>
-                
-            </form>
-
-            
+                </a>              
+            </form>       
         </div>
     </section>
-
+    {% if messages %}
+    <div id="message-container">
+        {% for message in messages %}
+            <div class="alert alert-success" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
     {% if user.is_authenticated %}
     <div class="container my-5">
         <p class="lead mb-4 lead-modern">Vos programmes suivis</p>
@@ -187,10 +192,15 @@
     setInterval(() => {
         document.querySelector('.search-form input[type="text"]').placeholder = placeholders[index];
         index = (index + 1) % placeholders.length;
-    }, 3000); // Change tous les 3 secondes
-
-    
+    }, 3000); // Change tous les 3 secondes 
 </script>
+
+<script type="text/javascript">
+    setTimeout(function() {
+        $('#message-container').fadeOut('slow');
+    }, 4000); // 4000 millisecondes = 4 secondes
+</script>
+
 <script>
     document.querySelector('.search-icon-link').addEventListener('click', function(event) {
     event.preventDefault(); // Empêcher le lien de changer la page
