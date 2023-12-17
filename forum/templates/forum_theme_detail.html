@@ -13,6 +13,18 @@
 </head>
 
 <div class="container my-5">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">Accueil</a></li>
+            {% if program_exists %}
+            <li class="breadcrumb-item"><a href="{% url 'program_forum' program_slug=program.slug %}">Forum {{ program.name }}</a></li>
+            {% else %}
+            <li class="breadcrumb-item"><a href="{% url 'general_forum' %}">Forum Général</a></li>
+            {% endif %}
+            <li class="breadcrumb-item" aria-current="page">{{ topic.title }}</li>
+        </ol>
+    </nav>  
     <div class="d-flex justify-content-between align-items-center">
         <h1>{{ topic.title }}</h1>
         {% if program_exists %}

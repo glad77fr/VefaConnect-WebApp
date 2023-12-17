@@ -178,7 +178,9 @@ class PostDetailView(DetailView):
         topic_slug = self.kwargs['topic_slug']
         post_slug = self.kwargs['post_slug']
         program_slug = self.kwargs.get('program_slug')
-
+        if program_slug:
+            program = get_object_or_404(RealEstateProgram, slug=program_slug)
+        topic = get_object_or_404(ForumTheme, slug=topic_slug)
 
         replies = Reply.objects.filter(post=self.object) \
             .annotate(vote_count=Count('upvotes')) \
@@ -193,8 +195,12 @@ class PostDetailView(DetailView):
         
         page = self.request.GET.get('page')
         context['replies'] = paginator.get_page(page)
+        # Ajouter le programme au contexte sous le nom 'program'
+        if program_slug:
+            context['program'] = program
         # Ajouter une instance du formulaire au contexte
         context['reply_form'] = ReplyModelForm()
+        context['topic'] = topic
         return context 
 
 

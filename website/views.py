@@ -189,11 +189,20 @@ def load_cities(request):
     cities = City.objects.filter(state_id=state_id).order_by('name')  # Filtrage des villes par l'état sélectionné
     return JsonResponse(list(cities.values('id', 'name')), safe=False)  # Envoi des villes au format JSON
 
-# Méthode pour supprimer le lien entre un utilisateur et un programme
 @login_required
 @require_POST  # S'assure que la vue ne peut être accédée que via POST
 def unfollow_program(request, program_id):
+    # Récupère l'objet RealEstateProgram ou renvoie une erreur 404 si non trouvé
     program = get_object_or_404(RealEstateProgram, pk=program_id)
-    FollowedProgram.objects.filter(user_profile=request.user.userprofile, program=program).delete()
+
+    # Supprime le lien entre l'utilisateur et le programme
+    FollowedProgram.objects.filter(
+        user_profile=request.user.userprofile, 
+        real_estate_program=program  # Utilisation du champ correct
+    ).delete()
+
+    # Ajoute un message d'information à afficher à l'utilisateur
     messages.info(request, "Vous avez cessé de suivre le programme.")
-    return redirect('home')  # Ou toute autre vue que vous souhaitez rediriger après l'action
+
+    # Redirection vers la page d'accueil ou toute autre page souhaitée
+    return redirect('home')

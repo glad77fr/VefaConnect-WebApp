@@ -11,6 +11,13 @@
 </head>
 
 <div class="container my-5">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}">Accueil</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Forum {{ real_estate_program.name }}</li>
+            </ol>
+        </nav>
     <h1 class="text-center mb-4">Forum {{ real_estate_program.name }}</h1>
 
     {% for theme in themes %}

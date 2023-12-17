@@ -198,3 +198,22 @@ footer {
   font-size: 1.2em;
 }
 
+.delete-button-form {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.delete-button {
+  position: absolute;
+  top: 0; /* Ajustez si nécessaire */
+  right: 0; /* Ajustez si nécessaire */
+  background-color: #6c757d; /* Couleur de fond du bouton */
+  color: white; /* Couleur du texte */
+  border: none; /* Supprime les bordures par défaut */
+}
+
+.delete-button:hover {
+  background-color: #dc3545; /* Rouge au survol */
+}
+

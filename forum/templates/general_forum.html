@@ -9,6 +9,13 @@
 
 {% block content %}
 <div class="container my-5">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">Accueil</a></li>
+            <li class="breadcrumb-item" aria-current="page">Forum Général</li>
+        </ol>
+    </nav>  
     <h1 class="text-center mb-4">{{ forum.name }}</h1>
 
     {% for theme in themes %}

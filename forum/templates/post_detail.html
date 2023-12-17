@@ -7,9 +7,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-
-
-
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{% static 'forum/css/style.css' %}">
     {{ reply_form.media }}
@@ -18,10 +15,22 @@
 </head>
     
 
-
 <div class="container my-5">
-    <!-- Original Post -->
-     <!-- Reply Button and Elegant Horizontal Line -->
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}">Accueil</a></li>
+                {% if program %}
+                <li class="breadcrumb-item"><a href="{% url 'program_forum' program_slug=program.slug %}">Forum {{ program.name }}</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'forum_theme_detail' program_slug=program.slug topic_slug=topic.slug%}">{{topic.title}}</a></li>
+                {% else %}
+                <li class="breadcrumb-item"><a href="{% url 'general_forum' %}">Forum Général</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'general_forum_theme_detail' topic_slug=topic.slug %}">{{topic.title}}</a></li>
+                {% endif %}
+                
+                <li class="breadcrumb-item" aria-current="page">{{ post.title }}</li>
+            </ol>
+        </nav>  
    
 
     <div class="d-flex justify-content-between mb-2">

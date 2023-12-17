@@ -45,22 +45,35 @@
         <p class="lead mb-4 lead-modern">Vos programmes suivis</p>
         <div class="row">
             {% for program in user_programs %}
-            <div class="col-md-4 card-container">
-                <div class="card h-100">
-                    {% if program.image %}
-                    <img src="{{ program.image.url }}" alt="{{ program.name }}" class="card-img-top">
-                    {% endif %}
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title">{{ program.name }}</h5>
-                        <p class="card-text">{{ program.description|truncatewords:15 }}</p>
-                    </div>
-                    <div class="card-footer mt-auto">
-                        <a href="{% url 'program_detail' slug=program.slug %}" class="btn btn-details btn-primary mt-3">Détails</a>
-                        <a href="{% url 'program_forum' program_slug=program.slug %}" class="btn btn-details btn-primary mt-3"> Forum</a>   
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
+<div class="col-md-4 card-container">
+    <div class="card h-100">
+        
+        <!-- Conteneur de l'image et du bouton -->
+        <div class="position-relative">
+            {% if program.image %}
+            <img src="{{ program.image.url }}" alt="{{ program.name }}" class="card-img-top">
+            {% endif %}
+            
+            <!-- Bouton pour ne plus suivre le programme -->
+            <form action="{% url 'unfollow_program' program.id %}" method="post" class="delete-button-form">
+                {% csrf_token %}
+                <button class=" delete-button">
+                    <i class="fas fa-times"></i>
+                </button>       
+            </form>
+        </div>
+        
+        <div class="card-body d-flex flex-column">
+            <h5 class="card-title">{{ program.name }}</h5>
+            <p class="card-text">{{ program.description|truncatewords:15 }}</p>
+        </div>
+        <div class="card-footer mt-auto">
+            <a href="{% url 'program_detail' slug=program.slug %}" class="btn btn-details btn-primary mt-3">Détails</a>
+            <a href="{% url 'program_forum' program_slug=program.slug %}" class="btn btn-details btn-primary mt-3">Forum</a>
+        </div>
+    </div>
+</div>
+{% endfor %}
         </div>
     </div>
      <!-- Articles Carousel -->
