@@ -39,6 +39,7 @@
             </div>
         {% endfor %}
     </div>
+
 {% endif %}
     {% if user.is_authenticated %}
     <div class="container my-5">
@@ -57,9 +58,9 @@
             <!-- Bouton pour ne plus suivre le programme -->
             <form action="{% url 'unfollow_program' program.id %}" method="post" class="delete-button-form">
                 {% csrf_token %}
-                <button class=" delete-button">
+                <button class="delete-button" data-toggle="modal" data-target="#unfollowConfirmationModal">
                     <i class="fas fa-times"></i>
-                </button>       
+                </button>   
             </form>
         </div>
         
@@ -70,6 +71,27 @@
         <div class="card-footer mt-auto">
             <a href="{% url 'program_detail' slug=program.slug %}" class="btn btn-details btn-primary mt-3">Détails</a>
             <a href="{% url 'program_forum' program_slug=program.slug %}" class="btn btn-details btn-primary mt-3">Forum</a>
+        </div>
+    </div>
+</div>
+
+    <!-- Modale de confirmation de désinscription -->
+<div class="modal fade" id="unfollowConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="unfollowConfirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="unfollowConfirmationModalLabel">Confirmation</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Êtes-vous sûr de vouloir ne plus suivre ce programme ?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                <button type="button" class="btn btn-primary" id="confirmUnfollow">Confirmer</button>
+            </div>
         </div>
     </div>
 </div>
@@ -194,7 +216,9 @@
     </div>
 
     {% endif %}
+{% endblock %}
 
+{% block extra_js %}
 <script>
     const placeholders = ["Recherchez un programme par nom...", "Recherchez un programme par ville..."];
     let index = 0;
@@ -217,7 +241,30 @@
 });
 
 </script>
-    
+<script>
+    $(document).ready(function() {
+        var formToSubmit; // Variable pour stocker le formulaire à soumettre
+
+        // Lorsque le bouton de désinscription est cliqué
+        $('.delete-button').click(function() {
+            formToSubmit = $(this).closest('form'); // Récupérez le formulaire à soumettre
+        });
+
+        // Lorsque l'utilisateur confirme la désinscription
+        $('#confirmUnfollow').click(function() {
+            formToSubmit.submit(); // Soumettez le formulaire
+        });
+    });
+
+</script>
+
+<script>
+$('.delete-button').click(function(event) {
+    event.preventDefault(); // Empêche la soumission automatique du formulaire
+    // Autres actions, comme ouvrir la modale
+});
+</script>
+
 {% endblock %}
 
 
