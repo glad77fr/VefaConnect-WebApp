@@ -217,3 +217,29 @@ footer {
   background-color: #dc3545; /* Rouge au survol */
 }
 
+.photo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-gap: 15px;
+}
+.photo-grid-item {
+  width: 100%;
+  position: relative;
+}
+.photo-grid-image {
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+.photo-caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0,0,0,0.7);
+  color: #fff;
+  padding: 5px;
+  text-align: center;
+  font-size: 0.9em;
+  border-radius: 0 0 4px 4px;
+}

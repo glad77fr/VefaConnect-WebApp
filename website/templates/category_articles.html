@@ -3,21 +3,28 @@
 {% block content %}
 <div class="container my-5">
     <h2>Articles dans la catégorie : {{ category.name }}</h2>
-
     <div class="row mt-4">
-        {% for article in articles %}
+        {% for article, title_image, section_text in articles_with_title_images %}
         <div class="col-md-4 mb-4">
             <div class="card h-100">
-                {% if article.image %}
-                <img src="{{ article.image.url }}" class="card-img-top" alt="{{ article.title }}">
+                {% if title_image %}
+                <img src="{{ title_image.image.url }}" class="card-img-top" alt="{{ title_image.alt_text|default:article.title }}">
                 {% endif %}
                 <div class="card-body">
                     <h5 class="card-title">{{ article.title }}</h5>
-                    <p class="card-text">{{ article.content|truncatewords:20 }}</p>
+                    <div class="article-meta mb-2">
+                        <small class="text-secondary">Par {{ article.author.get_full_name|default:article.author.username }}</small>
+                        <small class="text-secondary">le {{ article.publication_date|date:"d M Y" }}</small>
+                    </div>
+                    {% if article.meta_description %}
+                    <p>{{ article.meta_description }}</p>
+                    {% endif %}
                     <a href="{% url 'article_detail' category_slug=article.category.slug slug=article.slug %}" class="btn btn-primary">Lire plus</a>
                 </div>
             </div>
         </div>
+        {% empty %}
+        <p>Aucun article n'a été trouvé dans cette catégorie.</p>
         {% endfor %}
     </div>
 </div>

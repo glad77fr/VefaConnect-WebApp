@@ -21,7 +21,7 @@ from django.http import JsonResponse
 from .models import State, City
 from django.contrib import messages
 from django.views.decorators.http import require_POST
-
+from .models import ProgramPhoto
 
 def home(request):
     articles = Article.objects.all().order_by('-publication_date').prefetch_related('section_set')[:6]
@@ -171,11 +171,18 @@ class ArticleDetailView(DetailView):
 
 def category_articles(request, category_slug):
     category = get_object_or_404(Category, slug=category_slug)
-    articles = Article.objects.filter(category=category)
-    
+    articles = Article.objects.filter(category=category).order_by('-publication_date').prefetch_related('section_set')
+    articles_with_title_images = []
+
+    for article in articles:
+        title_image_section = article.section_set.filter(image_position='title').first()  # Obtenez l'image de titre de l'article
+        section_text = article.section_set.filter(type='text').first()
+        articles_with_title_images.append((article, title_image_section, section_text))
+
     return render(request, 'category_articles.html', {
         'category': category,
-        'articles': articles,
+        'articles_with_title_images': articles_with_title_images,
+        'section_text': section_text,
     })
 
 def load_states(request):
@@ -206,3 +213,7 @@ def unfollow_program(request, program_id):
 
     # Redirection vers la page d'accueil ou toute autre page souhaitée
     return redirect('home')
+
+def all_photos_view(request):
+    photos = ProgramPhoto.objects.all()  # Cela respectera l'ordre défini dans la classe Meta du modèle
+    return render(request, 'all_photos.html', {'photos': photos})

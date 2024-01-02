@@ -9,6 +9,7 @@ from geopy.extra.rate_limiter import RateLimiter
 import logging
 import uuid
 import requests
+from django.core.exceptions import ValidationError
 
 logger = logging.getLogger(__name__)
 
@@ -103,6 +104,9 @@ class RealEstateProgram(models.Model):
     image = models.ImageField(upload_to='program_images/', null=True, blank=True)
     validated = models.BooleanField(default=False, null=False)
     date_added = models.DateField(null=True, blank=True, auto_now_add=True)
+
+    def __str__(self):
+        return self.name
 
     def save(self, *args, **kwargs):
             self.name = self.name.strip().lower()  # Normalize the name by converting to lowercase and trimming whitespace
@@ -216,4 +220,30 @@ class Section(models.Model):
     image = models.ImageField(upload_to='articles/sections/', blank=True, null=True)
     caption = models.TextField(blank=True)        # Légende pour l'image
     alt_text = models.CharField(max_length=255, blank=True)   # Texte alternatif pour l'image
-  
+
+class PhotoCategory(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    description = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return self.name
+    
+def validate_image_extension(value):
+    ext = os.path.splitext(value.name)[1]  # Obtient l'extension du fichier
+    valid_extensions = ['.jpg', '.jpeg', '.png']
+    if not ext.lower() in valid_extensions:
+        raise ValidationError(u'Format de fichier non supporté. Les formats autorisés sont : JPG, JPEG, PNG.')
+    
+class ProgramPhoto(models.Model):
+    real_estate_program = models.ForeignKey(RealEstateProgram, on_delete=models.CASCADE, related_name='photos')
+    image = models.ImageField(upload_to='real_estate_program_photos/', blank=True, null=True, validators=[validate_image_extension])
+    caption = models.CharField(max_length=255, blank=True)
+    uploaded_by = models.ForeignKey('auth.User', on_delete=models.SET_NULL, null=True, blank=True)
+    upload_date = models.DateTimeField(auto_now_add=True)
+    category = models.ForeignKey(PhotoCategory, on_delete=models.SET_NULL, null=True, blank=True, related_name='photos')
+
+    def __str__(self):
+        return f"Photo of {self.real_estate_program.name} by {self.uploaded_by.username}"
+
+    class Meta:
+        ordering = ['-upload_date']  # Photos les plus récentes en premier

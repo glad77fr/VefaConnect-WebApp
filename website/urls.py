@@ -8,6 +8,8 @@ from .views import create_program
 from .views import ArticleDetailView
 from .views import load_states, load_cities
 from .views import unfollow_program
+from .views import all_photos_view
+
 
 
 class LogoutAndStay(LogoutView):
@@ -31,4 +33,5 @@ urlpatterns = [
     path('ajax/load-states/', load_states, name='ajax_load_states'),
     path('ajax/load-cities/', load_cities, name='ajax_load_cities'),
     path('unfollow_program/<int:program_id>/', unfollow_program, name='unfollow_program'),
+    path('photos/', all_photos_view, name='all_photos'),
 ]

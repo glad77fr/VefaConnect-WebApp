@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}Galerie de Tous les Programmes{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="text-center mb-4">Galerie de Tous les Programmes</h2>
+    <div class="photo-grid">
+        {% for photo in photos %}
+            <div class="photo-grid-item">
+                <img src="{{ photo.image.url }}" alt="{{ photo.caption }}" class="photo-grid-image">
+                <div class="photo-caption">{{ photo.caption }}</div>
+            </div>
+        {% empty %}
+            <p>Aucune photo n'a été trouvée.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

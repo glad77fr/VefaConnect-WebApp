@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import RealEstateDeveloper, RealEstateProgram,UnvalidatedRealEstateProgram 
+from .models import RealEstateDeveloper, RealEstateProgram,UnvalidatedRealEstateProgram, ProgramPhoto,PhotoCategory
 from .models import FollowedProgram, Country, City, Address, State
 from .models import Article, Section, Category
 
@@ -43,7 +43,6 @@ class CityAdmin(admin.ModelAdmin):
     search_fields = ('name', 'country__name')
 
     
-
 @admin.register(Address)
 class AddressAdmin(admin.ModelAdmin):
     list_display = ('street', 'city', 'country')
@@ -79,3 +78,17 @@ class CategoryAdmin(admin.ModelAdmin):
 class RealEstateDeveloperAdmin(admin.ModelAdmin):
     list_display = ('code', 'name','country')
     search_fields = ('code', 'name','country')
+
+@admin.register(ProgramPhoto)
+class ProgramPhotoAdmin(admin.ModelAdmin):
+    list_display = ('real_estate_program', 'caption', 'uploaded_by', 'upload_date', 'category')
+    list_filter = ('real_estate_program', 'upload_date', 'category')
+    search_fields = ('caption', 'real_estate_program__name', 'uploaded_by__username')
+    raw_id_fields = ('uploaded_by',)  # Permet de rechercher et sélectionner les utilisateurs plus facilement
+    date_hierarchy = 'upload_date'  # Navigation rapide à travers les dates
+    ordering = ('-upload_date',)
+
+@admin.register(PhotoCategory)
+class PhotoCategoryAdmin(admin.ModelAdmin):
+    list_display = ('name', 'description')
+    search_fields = ('name',)

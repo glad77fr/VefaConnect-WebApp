@@ -60,6 +60,7 @@ class ForumTheme(models.Model):
     order = models.IntegerField(default=0)
     icon_class = models.CharField(max_length=100, null=True, blank=True)
     slug = models.SlugField(unique=True, blank=True)
+    color = models.CharField(max_length=11, default='0, 0, 255')  # Format 'R, G, B'
 
     def __str__(self):
         return self.title

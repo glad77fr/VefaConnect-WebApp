@@ -17,7 +17,7 @@ class ForumAdmin(admin.ModelAdmin):
 # Configuration de l'administration pour le modèle ForumTheme
 @admin.register(ForumTheme)
 class ForumThemeAdmin(admin.ModelAdmin):
-    list_display = ('title', 'forum','order','icon_class', 'slug')
+    list_display = ('title', 'forum','order','icon_class','color', 'slug')
     list_filter = ('forum','order')
 
 # Configuration de l'administration pour le modèle ForumPost
@@ -33,4 +33,5 @@ class ReplyAdmin(admin.ModelAdmin):
     list_display = ('user', 'post', 'date_posted')
     list_filter = ('post__theme__forum',)
     search_fields = ('user__username', 'post__theme__title', 'content')
+
 
